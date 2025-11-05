@@ -2,7 +2,10 @@
 ## 1. Download the project
 Make a new directory and use the command `git clone` to download the project"
 
-## 2. Install Postgres
+## 2. Rename the project to your liking
+To rename the maven project you simply have to run `./rename.sh {NewProjectName}` and the script will take care of the rest.
+
+## 3. Install Postgres
 - First Solution :
 
 Got to this [link](https://www.postgresql.org/download/) and download the version that suits your OS.
@@ -11,11 +14,11 @@ Got to this [link](https://www.postgresql.org/download/) and download the versio
   If you have docker installed on your machine you can use the following command to download the postgres image and run it on your machine
   `docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD={myNotSoSecretPassword} -d postgres`
 
-## 3. Env Variable
+## 4. Env Variable
 
 Set your postgres password as an environment variable named `POSTGRES_PASSWORD` on your machine or on your project
 
-## 4. Create the Database
+## 5. Create the Database
 - Easy method :
   Use a database managing sofware (you can download one as a Vscode plugin) create a new database named `BoilerPlateApp`
 
@@ -29,15 +32,15 @@ Set your postgres password as an environment variable named `POSTGRES_PASSWORD` 
     - Create a new database using the command `CREATE DATABASE BoilerPlateApp;`
     - Exit the psql terminal using `\q`
 
-## 5. Download maven
+## 6. Download maven
 Download maven from this [link](https://maven.apache.org/download.cgi) and ensure that maven is correctly installed on
 your machine by running the command `mvn -v` in a terminal
 
-## 6. Install dependencies
+## 7. Install dependencies
 Open a terminal in the projects directory and run the command `mvn clean install -DskipTests`
 and then `mvn clean package -DskipTests`
 
-## 7. Run the project
+## 8. Run the project
 You can now run the project from your IDE. To check if your project is running properly,
 you can use postman or another tool and send the following **POST** request `localhost:8080/auth`
 

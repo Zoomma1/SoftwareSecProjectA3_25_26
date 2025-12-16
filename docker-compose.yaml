@@ -1,9 +1,9 @@
 
 services:
-  prod-db:
+  dev-db:
     image: postgres:17
     restart: always
-    container_name: prod-db
+    container_name: dev-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
@@ -13,23 +13,24 @@ services:
     ports:
       - 5434:5432
     networks:
-      - prod
+      - dev
 
-  prod-back: 
+  dev-back: 
     depends_on:
-      - prod-db
+      - dev-db
     build:
       context: ./back
       dockerfile: Dockerfile
     restart: always
-    container_name: prod-back
+    container_name: dev-back
     environment:
-      SPRING_PROFILES_ACTIVE: local,docker
+      SPRING_PROFILES_ACTIVE: dev,docker
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_HOST: dev-db
     ports:
-      - 8080:8090
+      - 8080:8080
     networks:
-      - prod
+      - dev
 
   serv-db:
     image: postgres:17
@@ -42,7 +43,7 @@ services:
     volumes:
       - ./data:/var/lib/postgresql/data
     ports:
-      - 5534:5532
+      - 5534:5432
     networks:
       - prod
 
@@ -57,25 +58,27 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod,docker
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_HOST: serv-db
     ports:
       - 8090:8090
     networks:
       - prod
 
   # Remove this comment once there is a first version of the frontend
-  # prod-front:
+  # dev-front:
   #   build:
   #     context: ./front
   #     dockerfile: Dockerfile
-  #   container_name: prod-front
+  #   container_name: dev-front
   #   ports:
   #     - 4200:80
   #   networks:
-  #     - prod
-
+  #     - dev
 volumes:
   data:
 
 networks:
   prod:
+    driver: bridge
+  dev:
     driver: bridge

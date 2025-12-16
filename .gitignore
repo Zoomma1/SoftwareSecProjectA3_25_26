@@ -1,0 +1,78 @@
+# Maven / Gradle
+back/target/
+back/build/
+back/out/
+back/.gradle/
+back/.mvn/wrapper/maven-wrapper.jar
+!back/.mvn/wrapper/maven-wrapper.properties
+
+# Spring Boot
+back/*.iml
+back/*.class
+back/*.log
+back/*.swp
+back/*.DS_Store
+back/.settings/
+back/.project
+back/.classpath
+back/.idea/
+back/*.h2.db
+back/*.db
+
+# React / Node
+front/node_modules/
+front/npm-debug.log*
+front/yarn-debug.log*
+front/yarn-error.log*
+front/pnpm-debug.log*
+front/package-lock.json
+front/yarn.lock
+front/pnpm-lock.yaml
+front/.pnp
+front/.pnp.js
+front/.turbo
+front/.parcel-cache
+front/.next
+front/.next/
+front/out/
+front/build/
+front/dist/
+front/coverage/
+
+# PostgreSQL
+back/*.sql
+back/*.pgsql
+back/*.dump
+back/*.backup
+back/pgdata/
+back/pglogs/
+data/
+back/data/
+.back/.pgpass
+back/psql_history
+
+# Environment / Config
+back/.env
+back/.env.*
+back/*.local
+front/.env
+front/.env.*
+front/*.local
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+logs/
+*.log
+*.tmp
+
+# IntelliJ / VSCode
+/.vscode/
+*.iws
+
+# Generated
+.sass-cache/
+cache/
+tmp/

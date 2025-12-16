@@ -31,14 +31,29 @@ services:
     networks:
       - prod
 
+  serv-db:
+    image: postgres
+    restart: always
+    container_name: serv-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - 5534:5532
+    networks:
+      - prod
+
   serv-back:
     depends_on:
-      - prod-db
+      - serv-db
     build:
       context: ./back
       dockerfile: Dockerfile
     restart: always
-    container_name: prod-back
+    container_name: serv-back
     environment:
       SPRING_PROFILES_ACTIVE: prod,docker
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

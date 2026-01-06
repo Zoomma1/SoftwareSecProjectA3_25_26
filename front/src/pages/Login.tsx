@@ -46,7 +46,7 @@ export default function Login() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Votre mot de passe"
+                  placeholder="•••••••••••••"
                   autoComplete="current-password"
                   required
                 />

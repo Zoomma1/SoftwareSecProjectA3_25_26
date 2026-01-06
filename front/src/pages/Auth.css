@@ -53,33 +53,35 @@ html, body, #root {
 .authTitle{ font-size: 56px; margin: 0 0 10px 0; color:#313131; font-weight:700; }
 .authSubtitle{ margin:0 0 28px 0; color:#313131; opacity:.75; }
 
-.authForm{ width: min(520px, 100%); }
-.authLabel{ display:block; font-size:14px; color:#313131; margin-bottom:16px; }
+.authForm{ width: 100%; max-width: 600px; }
+.authLabel{ display:block; font-size:13px; color:#333; margin-bottom:8px; font-weight: 500; }
 
 .authInput{
   width:100%;
-  margin-top:8px;
-  height:56px;
-  padding:0 16px;
-  border-radius:12px;
-  border:1px solid rgba(15,23,42,.06);
+  height:48px;
+  padding:0 14px;
+  border-radius:8px;
+  border: 1px solid #e5e7eb;
+  border-bottom: 3px solid #e5e7eb;
   background:#fff;
   outline:none;
-  font-size:16px;
+  font-size:15px;
   box-sizing:border-box;
+  transition: border-color 0.2s ease;
 }
 .authInput:focus{
-  border-color:transparent;
-  box-shadow: 0 4px 0 0 rgba(81,93,239,0.08), inset 0 -3px 0 0 #515DEF;
+  border-color: #e5e7eb;
+  border-bottom-color: #515DEF;
+  box-shadow: none;
 }
 
 .authInput::placeholder {
-  color: #b6bcc6;    
+  color: #9ca3af;    
   opacity: 1;        
 }
 
 .authInput:focus::placeholder {
-  color: transparent;
+  color: #9ca3af;
 }
 .authPasswordWrap{ position:relative; margin-top:8px; }
 .authInputPassword{ padding-right:54px; margin-top:0; }
@@ -101,10 +103,11 @@ html, body, #root {
 .authLinkBtn{ border:none; background:transparent; color:#515DEF; cursor:pointer; font-size:14px; padding:0; }
 
 .authPrimaryBtn{
-  width:100%; height:58px; border:none; border-radius:12px;
-  background: linear-gradient(180deg,#5a62ff,#4547d9);
-  color:#fff; font-weight:700; font-size:16px; cursor:pointer;
-  box-shadow: 0 6px 20px rgba(81,93,239,0.15);
+  width:100%; height:48px; border:none; border-radius:8px;
+  background: linear-gradient(180deg,#5a65ff,#4f46e5);
+  color:#fff; font-weight:600; font-size:15px; cursor:pointer;
+  box-shadow: 0 4px 12px rgba(81,93,239,0.2);
+  margin-top: 8px;
 }
 
 .authBottomText{ margin:14px 0 0; text-align:center; font-size:14px; color:#313131; }
@@ -114,16 +117,74 @@ html, body, #root {
   width: min(540px, 100%);
   aspect-ratio: 4 / 5;
   border-radius:18px;
-  background:#f2f3f7;
   display:flex; justify-content:center; align-items:center;
   padding:28px;
   box-sizing:border-box;
 }
 .authIllustrationImg{ width:86%; height:auto; object-fit:contain; }
 
+
+.authRegister{ grid-template-columns: 0.9fr 1.1fr; }
+.authRegisterForm{ justify-content: flex-start; }
+
+/* register layout adjustments */
+
+
+.authRow2{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.authField{ display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.authField .authLabel{ margin-bottom: 0; }
+.authError{ font-size: 12px; color: #ef4444; margin-top: 2px; }
+
+.authRegister .authPasswordWrap{ margin-top: 0; }
+
+
+.authRegister .authRight {
+  position: relative;
+  flex-direction: column;    
+  align-items: flex-start;
+  justify-content: center;
+  gap: 18px;                  
+}
+
+.authRegister .authLogo{
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  margin: 0;
+  background: #515DEF;
+}
+
+.authRegister .authTitle {
+  margin-bottom: 0;           
+  line-height: 1.05;
+}
+
+
 @media (max-width: 900px){
   .authShell{ grid-template-columns:1fr; padding:32px 20px; }
+  .authCard{ grid-template-columns:1fr; padding:32px 20px; }
   .authRight{ display:none; }
   .authTitle{ font-size:42px; }
   .authForm{ width:100%; }
+}
+
+/* inline logo next to title for register page */
+.authTitleRow{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  width:100%;
+  max-width:600px; /* match .authForm */
+  gap:24px;
+}
+.authLogoInline{
+  width:50px;
+  height:50px;
+  border-radius:12px;
+  background: #515DEF;
+  margin-top:12px; /* align vertically with inputs */
+  flex: 0 0 50px;
 }

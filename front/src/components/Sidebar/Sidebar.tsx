@@ -15,20 +15,28 @@ export default function Sidebar() {
         </Link>
 
         <NavLink to="/challenges" className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}>
-          <div className="sidebar-section">Challenges</div>
+          <img src="/icons/Icon challenges.svg" alt="Challenges" className="sidebar-icon sidebar-icon-default" />
+          <img src="/icons/Icon challenges purple.svg" alt="Challenges" className="sidebar-icon sidebar-icon-active" />
+          <span>Challenges</span>
         </NavLink>
         
         <NavLink to="/ranking" className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}>
-          <div className="sidebar-section">Ranking</div>
+          <img src="/icons/Icon Scoreboard.svg" alt="Scoreboard" className="sidebar-icon sidebar-icon-default" />
+          <img src="/icons/Icon Scoreboard purple.svg" alt="Scoreboard" className="sidebar-icon sidebar-icon-active" />
+          <span>Scoreboard</span>
         </NavLink>
         
         <NavLink to="/profile" className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}>
-          <div className="sidebar-section">Profile</div>
+          <img src="/icons/Icon Profil.svg" alt="Profil" className="sidebar-icon sidebar-icon-default" />
+          <img src="/icons/Icon Profil purple.svg" alt="Profil" className="sidebar-icon sidebar-icon-active" />
+          <span>Profil</span>
         </NavLink>
 
-        <div className="sidebar-section">
-          <button className="sidebar-button" onClick={handleLogout}>Déconnexion</button>
-        </div>
+        <button className="sidebar-button" onClick={handleLogout}>
+          <img src="/icons/Icon deconnexion.svg" alt="Déconnexion" className="sidebar-icon sidebar-icon-default" />
+          <img src="/icons/Icon deconnexion purple.svg" alt="Déconnexion" className="sidebar-icon sidebar-icon-active" />
+          <span>Déconnexion</span>
+        </button>
       </nav>
       <Outlet />
     </>

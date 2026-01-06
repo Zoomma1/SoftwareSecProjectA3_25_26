@@ -23,23 +23,26 @@
 }
 
 .sidebar-link {
-    padding: 30px 0px 0px;
-}
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  
+  /* même taille tout le temps */
+  height: 40px;
+  padding: 0 12px;
+  margin-top: 30px;
 
-.sidebar-link,
-.sidebar-button {
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: 8px;
   color: #656565;
-  background: none;
+  background: transparent;
   border: none;
   cursor: pointer;
   text-align: left;
-}
+  font-size: 1rem;
+  font-weight: 500;
 
-.sidebar-button {
-  position: absolute;
-  bottom: 4vh;
+  transition: background-color 180ms ease, color 180ms ease;
 }
 
 .sidebar-link:hover,
@@ -49,24 +52,87 @@
 
 .sidebar-link.active {
   background-color: #515eef1c;
-  border-radius: 8px;
   color: #515DEF;
-  margin: 30px 0px 0px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  position: relative;
 }
 
-.sidebar-link.active::before {
+/* barre à droite (pas de changement de layout) */
+.sidebar-link::before {
   content: "";
   position: absolute;
-  left: -12px;
+  right: -13px;
   top: 50%;
-  transform: translateY(-50%);
-  height: 20px;
+  transform: translateY(-50%) scaleY(0);
+  height: 40px;
   width: 4px;
   background-color: #515DEF;
   border-radius: 4px;
+  transition: transform 180ms ease;
+}
+
+.sidebar-link.active::before {
+  transform: translateY(-50%) scaleY(1);
+}
+
+.sidebar-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.sidebar-icon-default {
+  display: block;
+}
+
+.sidebar-icon-active {
+  display: none;
+}
+
+.sidebar-link:hover .sidebar-icon-default,
+.sidebar-button:hover .sidebar-icon-default,
+.sidebar-link.active .sidebar-icon-default {
+  display: none;
+}
+
+.sidebar-link:hover .sidebar-icon-active,
+.sidebar-button:hover .sidebar-icon-active,
+.sidebar-link.active .sidebar-icon-active {
+  display: block;
+}
+
+.sidebar-button {
+  position: absolute;
+  bottom: 4vh;
+  left: 1rem;
+  right: 1rem;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  height: 40px;
+  padding: 0 12px;
+
+  border-radius: 8px;
+  color: #656565;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+
+  font-size: 1rem;
+  font-weight: 500;
+
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.sidebar-button { margin-top: 0; }
+
+.sidebar-button:hover {
+  color: #515DEF;
+}
+
+/* Pas de barre active sur le bouton */
+.sidebar-button::before {
+  content: none;
 }

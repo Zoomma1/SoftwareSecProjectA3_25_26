@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './ChallengeCard.css';
 
 interface ChallengeCardProps {
@@ -10,6 +11,7 @@ interface ChallengeCardProps {
 
 const ChallengeCard = ({ category, points, title, difficulty, isResolved }: ChallengeCardProps) => {
   return (
+    <Link to="/challenges/:id" className="challenge-card-link">
     <div className="card-container">
       {/* Header avec catégorie et points */}
       <div className="card-header">
@@ -45,6 +47,7 @@ const ChallengeCard = ({ category, points, title, difficulty, isResolved }: Chal
         </span>
       </div>
     </div>
+    </Link>
   );
 };
 

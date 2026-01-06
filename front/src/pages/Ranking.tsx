@@ -1,3 +1,14 @@
+import "./Auth.css";
+import Sidebar from "../components/Sidebar/Sidebar.tsx";
+
 export default function Ranking() {
-  return <h1>Ranking</h1>;
+  return (
+    <>
+    <Sidebar />
+    <div className="test">
+      
+      <h1>Ranking</h1>;
+    </div>
+    </>
+  );
 }

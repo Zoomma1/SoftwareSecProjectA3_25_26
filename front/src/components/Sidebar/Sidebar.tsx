@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import "./Sidebar.css";
 
 export default function Sidebar() {
@@ -14,15 +14,17 @@ export default function Sidebar() {
           <div className="authLogo" aria-hidden></div>
         </Link>
 
-        <div className="sidebar-section">
-          <Link to="/challenges" className="sidebar-link">Challenges</Link>
-        </div>
-        <div className="sidebar-section">
-          <Link to="/ranking" className="sidebar-link">Ranking</Link>
-        </div>
-        <div className="sidebar-section">
-          <Link to="/profile" className="sidebar-link">Profile</Link>
-        </div>
+        <NavLink to="/challenges" className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}>
+          <div className="sidebar-section">Challenges</div>
+        </NavLink>
+        
+        <NavLink to="/ranking" className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}>
+          <div className="sidebar-section">Ranking</div>
+        </NavLink>
+        
+        <NavLink to="/profile" className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}>
+          <div className="sidebar-section">Profile</div>
+        </NavLink>
 
         <div className="sidebar-section">
           <button className="sidebar-button" onClick={handleLogout}>Déconnexion</button>

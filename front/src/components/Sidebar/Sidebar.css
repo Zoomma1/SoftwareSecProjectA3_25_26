@@ -1,0 +1,50 @@
+.sidebar-nav {
+  position: fixed;
+  top: 2vh;
+  bottom: 2vh;
+  left: 1.5vw;
+  width: 11vw;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1rem;
+  border-radius: 18px;
+  z-index: 999;
+  box-shadow: 0 3px 6px #d6dce5;
+}
+
+
+.authLogo{
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  background: #515DEF;
+  margin-bottom: 22px;
+}
+
+.sidebar-section {
+    gap : 24px;
+    padding: 30px 0px 0px;
+
+}
+
+.sidebar-link,
+.sidebar-button {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #656565;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.sidebar-button {
+  position: absolute;
+  bottom: 4vh;
+}
+
+.sidebar-link:hover,
+.sidebar-button:hover {
+  color: #515DEF;
+}

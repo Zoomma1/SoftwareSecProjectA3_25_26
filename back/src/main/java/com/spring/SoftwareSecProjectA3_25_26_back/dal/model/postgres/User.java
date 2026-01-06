@@ -3,6 +3,7 @@ package com.spring.SoftwareSecProjectA3_25_26_back.dal.model.postgres;
 import com.spring.SoftwareSecProjectA3_25_26_back.dal.model.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,6 +34,10 @@ public class User {
 
     @NotBlank
     private String username;
+
+    @Min(0)
+    @Column(name = "total_challenge_points", nullable = false)
+    private int totalChallengePoints;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

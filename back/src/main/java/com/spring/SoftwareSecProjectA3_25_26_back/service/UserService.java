@@ -1,8 +1,13 @@
 package com.spring.SoftwareSecProjectA3_25_26_back.service;
 
+import com.spring.SoftwareSecProjectA3_25_26_back.dal.model.enums.Difficulty;
+import com.spring.SoftwareSecProjectA3_25_26_back.dal.model.postgres.Challenge;
 import com.spring.SoftwareSecProjectA3_25_26_back.dal.model.postgres.User;
+import com.spring.SoftwareSecProjectA3_25_26_back.dal.postgres.repository.ChallengeRepository;
 import com.spring.SoftwareSecProjectA3_25_26_back.dal.postgres.repository.UserRepository;
 import com.spring.SoftwareSecProjectA3_25_26_back.dto.response.UserResponseDto;
+import com.spring.SoftwareSecProjectA3_25_26_back.exceptions.http.HttpBadRequestException;
+import com.spring.SoftwareSecProjectA3_25_26_back.exceptions.http.HttpUnauthorizedException;
 import com.spring.SoftwareSecProjectA3_25_26_back.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

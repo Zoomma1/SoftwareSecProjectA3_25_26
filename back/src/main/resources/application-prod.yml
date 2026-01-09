@@ -35,3 +35,10 @@ jwt:
   token-duration: 1800               # default: 30 min
   refresh-token-duration: 2592000      # default: 1 month
   issuer: SoftwareSecProjectA3_25_26_back
+
+aws:
+  accessKey: ${AWS_ACCESS_KEY}
+  secretKey: ${AWS_SECRET_KEY}
+  region: ${AWS_REGION}
+  s3:
+    bucket: ${S3_BUCKET_NAME}

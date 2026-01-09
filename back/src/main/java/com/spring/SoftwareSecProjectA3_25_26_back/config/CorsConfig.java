@@ -29,14 +29,14 @@ public class CorsConfig implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
 
         String origin = request.getHeader("Origin");
-        
+
         // Allow requests without Origin header (e.g., direct API calls, curl, etc.)
         if (origin == null) {
             // Pass through without CORS headers for non-browser requests
             chain.doFilter(req, res);
             return;
         }
-        
+
         // For requests with Origin header, validate it
         boolean isValidOrigin = Arrays.stream(allowedOrigin)
                 .anyMatch(allowed -> allowed.equals("*") || allowed.equalsIgnoreCase(origin));

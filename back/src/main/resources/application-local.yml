@@ -28,10 +28,16 @@ cors:
   insecure: false
   postman-testing : true
 
-
 jwt:
   secret: ykLx2aidrEhX6Jx58Je/Jg8/F7l/Jx2/RBosVlhgcVV6cZgIYHvLIzRTl4vI0SUs
   refresh-secret: x0OStMBKJVX+Fk3yvL9HIqNIpAoqyIYpbvAjRuQTw5xlJbMtSsDmy4xI63xsiB3f
   token-duration: 1800               # default: 30 min
   refresh-token-duration: 2592000      # default: 1 month
   issuer: SoftwareSecProjectA3_25_26_back
+
+aws:
+  accessKey: ${AWS_ACCESS_KEY}
+  secretKey: ${AWS_SECRET_KEY}
+  region: ${AWS_REGION}
+  s3:
+    bucket: ${S3_BUCKET_NAME}

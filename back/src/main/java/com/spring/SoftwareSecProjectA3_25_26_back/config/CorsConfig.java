@@ -29,15 +29,20 @@ public class CorsConfig implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
 
         String origin = request.getHeader("Origin");
-        boolean isValidOrigin = origin != null && Arrays.stream(allowedOrigin)
-                .anyMatch(allowed -> allowed.equals("*") || allowed.equalsIgnoreCase(origin));
 
-        if (origin == null && postmanTesting) {
-            isValidOrigin = true;
+        // Allow requests without Origin header (e.g., direct API calls, curl, etc.)
+        if (origin == null) {
+            // Pass through without CORS headers for non-browser requests
+            chain.doFilter(req, res);
+            return;
         }
 
+        // For requests with Origin header, validate it
+        boolean isValidOrigin = Arrays.stream(allowedOrigin)
+                .anyMatch(allowed -> allowed.equals("*") || allowed.equalsIgnoreCase(origin));
+
         if (isValidOrigin) {
-            response.setHeader("Access-Control-Allow-Origin", origin != null ? origin : "*");
+            response.setHeader("Access-Control-Allow-Origin", origin);
             response.setHeader("Access-Control-Allow-Credentials", "true");
             response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
             response.setHeader("Access-Control-Max-Age", "3600");
@@ -61,4 +66,3 @@ public class CorsConfig implements Filter {
     @Override
     public void destroy() {}
 }
-

@@ -110,6 +110,14 @@
 			<version>${org.mapstruct.version}</version>
 		</dependency>
 
+        <!-- AWS SDK -->
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>2.25.61</version>
+        </dependency>
+
 
 		<dependency>
 			<groupId>org.springdoc</groupId>

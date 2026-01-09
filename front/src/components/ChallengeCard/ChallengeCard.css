@@ -1,0 +1,86 @@
+/* ChallengeCard.css */
+:root {
+  --primary-blue: #6366f1;
+  --bg-light: #f8fafc;
+  --text-main: #1e293b;
+  --resolved-green: #10b981;
+  --unresolved-red: #f87171;
+}
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 1rem; /* 16px */
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid #f1f5f9;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.card-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.card-header {
+  height: 120px;
+  background-color: var(--bg-light);
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.category-tag {
+  align-self: flex-start;
+  background-color: #e0e7ff;
+  color: var(--primary-blue);
+  font-size: 10px;
+  font-weight: bold;
+  padding: 4px 12px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.points-text {
+  align-self: flex-end;
+  color: black;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.card-title {
+  text-align: center;
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 14px;
+  margin-bottom: 1rem;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.status-badge {
+  font-size: 10px;
+  font-weight: bold;
+  padding: 4px 12px;
+  border-radius: 6px;
+}
+
+.status-resolved {
+  background-color: #d1fae5;
+  color: var(--resolved-green);
+}
+
+.status-unresolved {
+  background-color: #fef2f2;
+  color: var(--unresolved-red);
+}

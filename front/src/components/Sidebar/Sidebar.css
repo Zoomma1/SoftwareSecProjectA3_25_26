@@ -1,0 +1,138 @@
+.sidebar-nav {
+  position: fixed;
+  top: 2vh;
+  bottom: 2vh;
+  left: 1.5vw;
+  width: 11vw;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1rem;
+  border-radius: 18px;
+  z-index: 999;
+  box-shadow: 0 3px 6px #d6dce5;
+}
+
+
+.authLogo{
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  background: #515DEF;
+  margin-bottom: 22px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  
+  /* même taille tout le temps */
+  height: 40px;
+  padding: 0 12px;
+  margin-top: 30px;
+
+  border-radius: 8px;
+  color: #656565;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 500;
+
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.sidebar-link:hover,
+.sidebar-button:hover {
+  color: #515DEF;
+}
+
+.sidebar-link.active {
+  background-color: #515eef1c;
+  color: #515DEF;
+}
+
+/* barre à droite (pas de changement de layout) */
+.sidebar-link::before {
+  content: "";
+  position: absolute;
+  right: -13px;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  height: 40px;
+  width: 4px;
+  background-color: #515DEF;
+  border-radius: 4px;
+  transition: transform 180ms ease;
+}
+
+.sidebar-link.active::before {
+  transform: translateY(-50%) scaleY(1);
+}
+
+.sidebar-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.sidebar-icon-default {
+  display: block;
+}
+
+.sidebar-icon-active {
+  display: none;
+}
+
+.sidebar-link:hover .sidebar-icon-default,
+.sidebar-button:hover .sidebar-icon-default,
+.sidebar-link.active .sidebar-icon-default {
+  display: none;
+}
+
+.sidebar-link:hover .sidebar-icon-active,
+.sidebar-button:hover .sidebar-icon-active,
+.sidebar-link.active .sidebar-icon-active {
+  display: block;
+}
+
+.sidebar-button {
+  position: absolute;
+  bottom: 4vh;
+  left: 1rem;
+  right: 1rem;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  height: 40px;
+  padding: 0 12px;
+
+  border-radius: 8px;
+  color: #656565;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+
+  font-size: 1rem;
+  font-weight: 500;
+
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.sidebar-button { margin-top: 0; }
+
+.sidebar-button:hover {
+  color: #515DEF;
+}
+
+/* Pas de barre active sur le bouton */
+.sidebar-button::before {
+  content: none;
+}

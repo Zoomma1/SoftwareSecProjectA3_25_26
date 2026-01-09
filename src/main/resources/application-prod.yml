@@ -3,7 +3,7 @@ spring:
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
     username: postgres
-    url: jdbc:postgresql://localhost:5432/BoilerPlateApp
+    url: jdbc:postgresql://localhost:5534/postgres
   jpa:
     show-sql: 'true'
 
@@ -20,13 +20,13 @@ logging:
 
 server:
   servlet:
-    context-path: /BoilerPlateApp
+    context-path: /SoftwareSecProjectA3_25_26_back
   port: 8080
 
 cors:
-  allowed-origin:
+  allowed-origin: "*"
   insecure: false
-  postman-testing : false
+  postman-testing: false
 
 
 jwt:
@@ -34,4 +34,11 @@ jwt:
   refresh-secret: x0OStMBKJVX+Fk3yvL9HIqNIpAoqyIYpbvAjRuQTw5xlJbMtSsDmy4xI63xsiB3f
   token-duration: 1800               # default: 30 min
   refresh-token-duration: 2592000      # default: 1 month
-  issuer: BoilerPlateApp
+  issuer: SoftwareSecProjectA3_25_26_back
+
+aws:
+  accessKey: ${AWS_ACCESS_KEY}
+  secretKey: ${AWS_SECRET_KEY}
+  region: ${AWS_REGION}
+  s3:
+    bucket: ${S3_BUCKET_NAME}

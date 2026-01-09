@@ -3,10 +3,9 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 		<groupId>com.spring</groupId>
-		<artifactId>BoilerPlateApp</artifactId>
+		<artifactId>SoftwareSecProjectA3_25_26_back</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<name>BoilerPlateApp_spring</name>
-	<description>Boilerplate for spring</description>
+		<name>SoftwareSecProjectA3_25_26_back_spring</name>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -17,7 +16,7 @@
 		<java.version>17</java.version>
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
 		<lombok.version>1.18.30</lombok.version>
-		<org.apache.maven.plugins.version>3.5.1</org.apache.maven.plugins.version>
+		<org.apache.maven.plugins.version>3.11.0</org.apache.maven.plugins.version>
 		<okhttp.version>4.9.3</okhttp.version>
 	</properties>
 
@@ -110,6 +109,14 @@
 			<artifactId>mapstruct</artifactId>
 			<version>${org.mapstruct.version}</version>
 		</dependency>
+
+        <!-- AWS SDK -->
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>2.25.61</version>
+        </dependency>
 
 
 		<dependency>

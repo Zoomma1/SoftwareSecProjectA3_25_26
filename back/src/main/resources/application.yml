@@ -28,4 +28,3 @@ server:
     include-message: always
     include-exception: true
     include-binding-errors: always
-

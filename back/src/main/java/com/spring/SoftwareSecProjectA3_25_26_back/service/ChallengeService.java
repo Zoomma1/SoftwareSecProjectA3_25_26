@@ -6,6 +6,7 @@ import com.spring.SoftwareSecProjectA3_25_26_back.dal.model.postgres.User;
 import com.spring.SoftwareSecProjectA3_25_26_back.dal.postgres.repository.ChallengeRepository;
 import com.spring.SoftwareSecProjectA3_25_26_back.dal.postgres.repository.UserRepository;
 import com.spring.SoftwareSecProjectA3_25_26_back.dto.ChallengeDto;
+import com.spring.SoftwareSecProjectA3_25_26_back.dto.request.ChallengeUploadRequestDto;
 import com.spring.SoftwareSecProjectA3_25_26_back.dto.response.UserResponseDto;
 import com.spring.SoftwareSecProjectA3_25_26_back.exceptions.http.HttpBadRequestException;
 import com.spring.SoftwareSecProjectA3_25_26_back.exceptions.http.HttpUnauthorizedException;
@@ -14,10 +15,11 @@ import com.spring.SoftwareSecProjectA3_25_26_back.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 import java.util.List;
-
+//HM
 @Service
 @Transactional
 public class ChallengeService {
@@ -30,6 +32,9 @@ public class ChallengeService {
 
     @Autowired
     private SecurityService securityService;
+
+    @Autowired
+    private FileUploadService fileUploadService;
 
     /**
      * Retourne les derniers challenges (tous users confondus).
@@ -136,6 +141,41 @@ public class ChallengeService {
         Challenge challenge = ChallengeMapper.INSTANCE.toEntity(dto);
         // la migration impose NOT NULL sur user_id
         challenge.setUser(user);
+
+        Challenge saved = challengeRepository.save(challenge);
+        return ChallengeMapper.INSTANCE.toDto(saved);
+    }
+
+    /**
+     * Crée un challenge avec upload de fichiers pour l'utilisateur connecté.
+     * Supporte soit un fichier ZIP unique, soit plusieurs fichiers (automatiquement zippés).
+     */
+    public ChallengeDto createWithFiles(ChallengeUploadRequestDto uploadDto) {
+        Long loggedId = securityService.getLoggedId();
+        if (loggedId == null) {
+            throw new HttpUnauthorizedException("Authentication required");
+        }
+
+        validateChallengeUploadDto(uploadDto);
+
+        User user = userRepository.findById(loggedId)
+                .orElseThrow(() -> new HttpBadRequestException("Unknown user"));
+
+        // Upload files and get S3 URL
+        String s3Url = fileUploadService.handleChallengeFileUpload(
+                uploadDto.getZipFile(),
+                uploadDto.getMultipleFiles()
+        );
+
+        // Create Challenge entity
+        Challenge challenge = new Challenge();
+        challenge.setUser(user);
+        challenge.setTitle(uploadDto.getTitle());
+        challenge.setDescription(uploadDto.getDescription());
+        challenge.setSolution(uploadDto.getSolution());
+        challenge.setCategory(uploadDto.getCategory());
+        challenge.setDifficulty(uploadDto.getDifficulty() != null ? uploadDto.getDifficulty() : Difficulty.MEDIUM);
+        challenge.setAttachmentUrl(s3Url);
 
         Challenge saved = challengeRepository.save(challenge);
         return ChallengeMapper.INSTANCE.toDto(saved);
@@ -273,5 +313,32 @@ public class ChallengeService {
         if (s == null) return null;
         String t = s.trim();
         return t.isEmpty() ? null : t;
+    }
+
+    /**
+     * Valide le DTO d'upload de challenge
+     */
+    private void validateChallengeUploadDto(ChallengeUploadRequestDto dto) {
+        if (dto == null) {
+            throw new HttpBadRequestException("Upload request is required");
+        }
+        if (dto.getTitle() == null || dto.getTitle().isBlank()) {
+            throw new HttpBadRequestException("Title is required");
+        }
+        if (dto.getDescription() == null || dto.getDescription().isBlank()) {
+            throw new HttpBadRequestException("Description is required");
+        }
+        if (dto.getSolution() == null || dto.getSolution().isBlank()) {
+            throw new HttpBadRequestException("Solution is required");
+        }
+        if (dto.getCategory() == null || dto.getCategory().isBlank()) {
+            throw new HttpBadRequestException("Category is required");
+        }
+
+        // Verify at least one file is provided
+        if ((dto.getZipFile() == null || dto.getZipFile().isEmpty()) &&
+            (dto.getMultipleFiles() == null || dto.getMultipleFiles().isEmpty())) {
+            throw new HttpBadRequestException("Either a ZIP file or multiple files must be provided");
+        }
     }
 }

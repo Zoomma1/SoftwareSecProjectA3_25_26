@@ -4,13 +4,14 @@ import com.spring.SoftwareSecProjectA3_25_26_back.annotation.PublicEndpoint;
 import com.spring.SoftwareSecProjectA3_25_26_back.dal.model.enums.Difficulty;
 import com.spring.SoftwareSecProjectA3_25_26_back.dto.ChallengeDto;
 import com.spring.SoftwareSecProjectA3_25_26_back.dto.request.ChallengeSubmissionRequestDto;
+import com.spring.SoftwareSecProjectA3_25_26_back.dto.request.ChallengeUploadRequestDto;
 import com.spring.SoftwareSecProjectA3_25_26_back.service.ChallengeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//HM
 @Tag(name = "Challenges")
 @RestController
 @RequestMapping("/challenges")
@@ -86,6 +87,14 @@ public class ChallengeController {
         return ResponseEntity.ok(challengeService.createForLoggedUser(dto));
     }
 
+
+    @PostMapping("/upload")
+    public ResponseEntity<ChallengeDto> createWithFiles(
+            @ModelAttribute ChallengeUploadRequestDto uploadDto
+    ) {
+        return ResponseEntity.ok(challengeService.createWithFiles(uploadDto));
+    }
+
     /** Mise à jour: owner ou admin/super-admin. */
     @PutMapping("/{challengeId}")
     public ResponseEntity<ChallengeDto> update(@PathVariable Long challengeId, @RequestBody ChallengeDto dto) {
@@ -101,8 +110,6 @@ public class ChallengeController {
 
     /**
      * Soumet une réponse pour un challenge. Si correct, le challenge est compté comme complété et le user gagne des points.
-     *
-     * @return true si la réponse est correcte, false sinon.
      */
     @PostMapping("/{challengeId}/submit")
     public ResponseEntity<Boolean> submit(

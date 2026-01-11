@@ -70,6 +70,7 @@ logs/
 
 # IntelliJ / VSCode
 /.vscode/
+.idea/
 *.iws
 
 # Generated

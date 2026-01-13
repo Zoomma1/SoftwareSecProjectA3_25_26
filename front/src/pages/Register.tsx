@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Auth.css";
+import { AuthService } from "../Service/AuthService";
 
 type FormState = {
   lastName: string;
@@ -75,16 +76,18 @@ export default function Register() {
 
     setIsSubmitting(true);
     try {
-      // TODO: remplacer par ton appel API quand backend prêt
-      console.log("REGISTER payload:", {
-        lastName: form.lastName.trim(),
-        firstName: form.firstName.trim(),
-        email: form.email.trim().toLowerCase(),
-        password: form.password,
+      await AuthService.register({
+        email: form.email.trim(),
+        password: form.password.trim(),
+        username: form.email.trim().toLowerCase(),
+        fullname: `${form.firstName.trim()} ${form.lastName.trim()}`,
       });
 
       // MVP: redirection login
       navigate("/login");
+    } catch (error: any) {
+      console.error(error);
+      alert(error.message || "Erreur lors de l'inscription");
     } finally {
       setIsSubmitting(false);
     }

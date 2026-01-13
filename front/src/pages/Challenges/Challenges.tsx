@@ -7,7 +7,6 @@ export default function Challenges() {
 
   return (
   <>
-  <Sidebar />
   
   <div className="body-container">
     <SearchBar />

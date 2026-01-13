@@ -27,8 +27,6 @@ const rankingData: RankingPlayer[] = [
 export default function Ranking() {
   return (
     <div className="rankingLayout">
-      <Sidebar />
-
       <main className="rankingPage">
         <h1 className="rankingTitle">Scoreboard</h1>
 

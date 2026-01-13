@@ -20,7 +20,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/challenges" element={<Challenges />} />
               <Route path="/challenges/:id" element={<ChallengeDetail />} />
               <Route path="/ranking" element={<Ranking />} />
-              <Route path="/profile" element={<Profile  />} />
             </Route>
           <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

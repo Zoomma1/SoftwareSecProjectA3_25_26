@@ -9,6 +9,7 @@ import ChallengeDetail from "./pages/ChallengeDetail.tsx";
 import "./index.css";
 import Sidebar from "./components/Sidebar/Sidebar.tsx";
 import { AuthProvider } from "./contexts/AuthContext.tsx";
+import Profile from "./pages/Profile.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -20,6 +21,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/challenges" element={<Challenges />} />
               <Route path="/challenges/:id" element={<ChallengeDetail />} />
               <Route path="/ranking" element={<Ranking />} />
+              <Route path="/profile" element={<Profile/>} />
             </Route>
           <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

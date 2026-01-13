@@ -11,5 +11,6 @@ public class UserResponseDto {
     private String email;
     private String username;
     private String role;
+    private int totalChallengePoints;
     private Set<Long> completedChallenges = new HashSet<>();
 }

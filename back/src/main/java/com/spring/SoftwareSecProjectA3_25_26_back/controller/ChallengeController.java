@@ -8,6 +8,7 @@ import com.spring.SoftwareSecProjectA3_25_26_back.dto.request.ChallengeUploadReq
 import com.spring.SoftwareSecProjectA3_25_26_back.service.ChallengeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -88,7 +89,7 @@ public class ChallengeController {
     }
 
 
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ChallengeDto> createWithFiles(
             @ModelAttribute ChallengeUploadRequestDto uploadDto
     ) {

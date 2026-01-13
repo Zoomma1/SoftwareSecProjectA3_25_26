@@ -27,18 +27,11 @@ public class FileUploadService {
      * 1. Upload a single ZIP file directly
      * 2. Zip multiple files and upload the result
      */
-    public String handleChallengeFileUpload(MultipartFile zipFile, List<MultipartFile> multipleFiles) {
-        if ((zipFile == null || zipFile.isEmpty()) && (multipleFiles == null || multipleFiles.isEmpty())) {
+    public String handleChallengeFileUpload( List<MultipartFile> multipleFiles) {
+        if ((multipleFiles == null || multipleFiles.isEmpty())) {
             throw new HttpBadRequestException("Either a ZIP file or multiple files must be provided");
         }
-
-        if (zipFile != null && !zipFile.isEmpty()) {
-            // Single ZIP file upload
-            return handleSingleZipUpload(zipFile);
-        } else {
-            // Multiple files: create ZIP and upload
             return handleMultipleFilesUpload(multipleFiles);
-        }
     }
 
     /**

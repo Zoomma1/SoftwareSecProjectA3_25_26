@@ -29,5 +29,28 @@ public class UserController {
         return userService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public  UserResponseDto findById(@PathVariable Long id){
+        return userService.findById(id);
+    }
+
+    @GetMapping("/me")
+    public UserResponseDto getCurrentUser() {
+        return userService.getCurrentUser();
+    }
+
+    // Mark a challenge as completed for a user
+    @PostMapping(path = "/{id}/completed-challenges/{challengeId}")
+    public UserResponseDto markChallengeCompleted(@PathVariable("id") Long userId,
+                                                  @PathVariable("challengeId") Long challengeId) {
+        return userService.markChallengeCompleted(userId, challengeId);
+    }
+
+    // Unmark a challenge as completed for a user
+    @DeleteMapping(path = "/{id}/completed-challenges/{challengeId}")
+    public UserResponseDto unmarkChallengeCompleted(@PathVariable("id") Long userId,
+                                                    @PathVariable("challengeId") Long challengeId) {
+        return userService.unmarkChallengeCompleted(userId, challengeId);
+    }
 
 }

@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -36,28 +37,44 @@ public class SecurityService {
      */
 
     static public boolean isUserAnonymous() {
-        // by default spring security set the principal as "anonymousUser"
-        return SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal()
-                .equals("anonymousUser");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            return true;
+        }
+        Object principal = auth.getPrincipal();
+        if (principal == null) {
+            return true;
+        }
+        // Spring sets anonymous principal as the String "anonymousUser"
+        if (principal instanceof String) {
+            return "anonymousUser".equals(principal);
+        }
+        return false;
     }
 
     public Long getLoggedId() {
-        if (!isUserAnonymous()) {
-            return ((TokenPayload) SecurityContextHolder.getContext()
-                    .getAuthentication()
-                    .getPrincipal()).getId();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return null;
+        }
+        Object principal = auth.getPrincipal();
+        if (principal instanceof TokenPayload) {
+            return ((TokenPayload) principal).getId();
         }
         return null;
     }
 
 
     public boolean userHasRole(String role) {
-        return ((TokenPayload) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal()).getRole()
-                .equals(role);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
+        Object principal = auth.getPrincipal();
+        if (principal instanceof TokenPayload) {
+            return ((TokenPayload) principal).getRole().equals(role);
+        }
+        return false;
     }
 
     public TokenSet logUser(User user) {
@@ -86,9 +103,22 @@ public class SecurityService {
     }
 
     public boolean validUSERPerformAction(String objectId) {
-        return (userHasRole(Role.ROLE_ADMIN.toString()) ||
-                userHasRole(Role.ROLE_SUPER_ADMIN.toString()) ||
-                objectId.equals(getLoggedId()));
+        // Allow admins first
+        if (userHasRole(Role.ROLE_ADMIN.toString()) || userHasRole(Role.ROLE_SUPER_ADMIN.toString())) {
+            return true;
+        }
+
+        Long loggedId = getLoggedId();
+        if (loggedId == null) {
+            return false;
+        }
+
+        try {
+            Long objId = Long.valueOf(objectId);
+            return objId.equals(loggedId);
+        } catch (NumberFormatException e) {
+            return false;
+        }
 
     }
 

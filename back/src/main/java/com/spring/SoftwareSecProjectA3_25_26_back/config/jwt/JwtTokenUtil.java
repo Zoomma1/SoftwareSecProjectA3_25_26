@@ -56,7 +56,8 @@ public class JwtTokenUtil {
   }
 
   public TokenPayload getPayload(DecodedJWT jwt) {
-    Long id = Long.parseLong(jwt.getClaim("id").asString());
+    // Read numeric id consistently with how we write it
+    Long id = jwt.getClaim("id").asLong();
     String role = jwt.getClaim("role").asString();
 
     var payload = new TokenPayload();
@@ -99,29 +100,26 @@ public class JwtTokenUtil {
   private String generateToken(TokenPayload tokenPayload) {
     Calendar calendar = Calendar.getInstance(locale);
     calendar.add(Calendar.SECOND, jwtProperties.getTokenDuration());
-    Map<String, String> payload = new HashMap<>();
-    payload.put("id", tokenPayload.getId().toString());
-    payload.put("role", tokenPayload.getRole());
 
     return JWT.create()
             .withIssuer(jwtProperties.getIssuer())
             .withIssuedAt(Calendar.getInstance(locale).getTime())
             .withExpiresAt(calendar.getTime())
-            .withPayload(payload)
+            // write id as numeric claim and role as string claim
+            .withClaim("id", tokenPayload.getId())
+            .withClaim("role", tokenPayload.getRole())
             .sign(standardAlgorithm);
   }
 
   String generateRefreshToken(TokenPayload tokenPayload) {
       Calendar calendar = Calendar.getInstance(locale);
       calendar.add(Calendar.SECOND, jwtProperties.getRefreshTokenDuration());
-      Map<String, String> payload = new HashMap<>();
-      payload.put("id", tokenPayload.getId().toString());
 
       String jwt = JWT.create()
               .withIssuer(jwtProperties.getIssuer())
               .withIssuedAt(Calendar.getInstance(locale).getTime())
               .withExpiresAt(calendar.getTime())
-              .withPayload(payload)
+              .withClaim("id", tokenPayload.getId())
               .sign(refreshAlgorithm);
       JWTVerifier verifier = JWT.require(refreshAlgorithm)
               .withIssuer(jwtProperties.getIssuer())

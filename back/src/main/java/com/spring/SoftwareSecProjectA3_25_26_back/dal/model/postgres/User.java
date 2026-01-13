@@ -10,6 +10,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -38,6 +40,11 @@ public class User {
     @Min(0)
     @Column(name = "total_challenge_points", nullable = false)
     private int totalChallengePoints;
+
+    @ElementCollection
+    @CollectionTable(name = "user_completed_challenges", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "challenge_id")
+    private Set<Long> completedChallenges = new HashSet<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -30,12 +30,6 @@ public class ChallengeUploadRequestDto {
     private Difficulty difficulty;
 
     /**
-     * Single ZIP file upload
-     * If provided, this takes precedence over multipleFiles.
-     */
-    private MultipartFile zipFile;
-
-    /**
      * Multiple files to upload
      * They will be automatically zipped before S3 upload.
      * If zipFile is also provided, this is ignored.

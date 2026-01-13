@@ -1,9 +1,14 @@
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext.tsx";
 import "./Sidebar.css";
 
 export default function Sidebar() {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
   const handleLogout = async () => {
-    //TODO: implement logout functionality
+    logout();
+    navigate("/login");
   };
 
   return (

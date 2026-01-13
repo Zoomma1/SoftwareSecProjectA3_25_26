@@ -7,18 +7,21 @@ import Register from "./pages/Register.tsx";
 import Ranking from "./pages/Ranking.tsx";
 import ChallengeDetail from "./pages/ChallengeDetail.tsx";
 import "./index.css";
+import { AuthProvider } from "./contexts/AuthContext.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <Routes>
-          <Route path="/" element={<Navigate to="/challenges" replace />} />
-          <Route path="/challenges" element={<Challenges />} />
-          <Route path="/challenges/:id" element={<ChallengeDetail />} />
-          <Route path="/ranking" element={<Ranking />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+            <Route path="/" element={<Navigate to="/challenges" replace />} />
+            <Route path="/challenges" element={<Challenges />} />
+            <Route path="/challenges/:id" element={<ChallengeDetail />} />
+            <Route path="/ranking" element={<Ranking />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

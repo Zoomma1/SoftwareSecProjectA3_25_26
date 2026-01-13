@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import ChallengeCard from "../components/ChallengeCard/ChallengeCard";
 import "./Profile.css";
 import Input from "../components/Input/Input";
+import ScoreRow from "../components/ScoreRow/ScoreRow";
 
 const user = {
   fullName: "Nom Prénom",
@@ -64,15 +65,7 @@ export default function Profile() {
 
           <div className="profileRight">
             <div className="profileStatsBanner">
-              <div className="profileStatsRank">
-                <img src="/icons/crown.svg" alt="Crown" className="profileCrown" />
-                <span className="profileRank">1</span>
-              </div>
-              <span className="profileStatsName">{user.fullName}</span>
-              <div className="profileStatsDetails">
-                <span>Challenges résolus <b>{user.solved}</b></span>
-                <span>Score total <b className="profileScore">{user.score}pt</b></span>
-              </div>
+              <ScoreRow rank={1} fullName={user.fullName} solved={user.solved} score={user.score} compact />
             </div>
 
             <div className="profileChallengesWrapper">

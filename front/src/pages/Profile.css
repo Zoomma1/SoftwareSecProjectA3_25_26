@@ -35,64 +35,6 @@
   flex: 1;
   display: flex;
   align-items: center;
-
-.profileTabSlider {
-  position: absolute;
-  top: 4px;
-  left: 8px;
-  width: calc(50% - 8px);
-  height: calc(100% - 8px);
-  background: #4f5df1;
-  border-radius: 999px;
-  box-shadow: 0 2px 8px rgba(99,102,241,0.10);
-  z-index: 0;
-  transition: transform 0.32s cubic-bezier(.4,1.2,.6,1), background 0.2s;
-  will-change: transform;
-}
-  gap: 32px;
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 3px 6px #d6dce5;
-  padding: 24px 40px;
-  min-height: 90px;
-  margin-left: 0;
-  margin-right: 0;
-  justify-content: flex-start;
-}
-.profileStatsBanner .profileStatsRank {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.profileStatsBanner .profileCrown {
-  width: 28px;
-  height: 28px;
-}
-.profileStatsBanner .profileRank {
-  font-size: 22px;
-  font-weight: 700;
-  color: #6366f1;
-}
-.profileStatsBanner .profileStatsName {
-  font-size: 20px;
-  font-weight: 600;
-  color: #1e293b;
-}
-.profileStatsBanner .profileStatsDetails {
-  display: flex;
-  gap: 32px;
-  font-size: 15px;
-  color: #64748b;
-}
-.profileStatsBanner .profileScore {
-  color: #3b5bff;
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1.3;
-  padding: 0 4px;
-  height: auto;
-  display: inline;
-  border-radius: 0;
 }
 
 .profileCard {
@@ -159,63 +101,6 @@
   color: #64748b;
   margin-bottom: 2px;
 }
-
-.profileStats {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 3px 6px #d6dce5;
-  padding: 24px 32px;
-  min-width: 350px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  justify-content: center;
-}
-
-.profileStatsRank {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.profileCrown {
-  width: 28px;
-  height: 28px;
-}
-
-.profileRank {
-  font-size: 22px;
-  font-weight: 700;
-  color: #6366f1;
-}
-
-.profileStatsName {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 8px;
-}
-
-.profileStatsDetails {
-  display: flex;
-  gap: 32px;
-  font-size: 15px;
-  color: #64748b;
-}
-
-.profileScore {
-  color: #3b5bff;
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1.3;
-  padding: 0 4px;
-  height: auto;
-  display: inline;
-  border-radius: 0;
-}
-
 
 .profileGrid {
   display: grid;

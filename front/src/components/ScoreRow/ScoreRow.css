@@ -1,0 +1,107 @@
+.score-row{
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 20px 18px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 0.8fr;
+  align-items: center;
+  box-shadow: 0 4px 5px rgba(16, 24, 40, 0.06);
+}
+
+.score-row--compact{
+  padding: 20px 28px;
+  border-radius: 18px;
+  box-shadow: 0 3px 6px rgba(214, 220, 229, 0.9);
+  width: 100%;
+}
+
+.score-row-left{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 70px;
+}
+
+.rankBadge{
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: #eef2ff;
+  display: grid;
+  place-items: center;
+}
+
+.rankBadge--top{
+  background: #e7ecff;
+}
+
+.rankBadgeWrapper{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  min-width: 48px;
+}
+
+.scoreboard-crown{
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  left: 50%;
+  top: -18px;
+  transform: translateX(-50%);
+  z-index: 2;
+  background: none;
+}
+
+.rankNumber{
+  font-size: 18px;
+  font-weight: 700;
+  color: #3b5bff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 48px;
+}
+
+.playerName{
+  font-size: 16px;
+  font-weight: 600;
+  color: #0b0f1a;
+}
+
+.score-row-mid{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.label{
+  font-size: 13px;
+  color: rgba(11, 15, 26, 0.75);
+}
+
+.pipe{
+  font-weight: 700;
+  color: #3b5bff;
+}
+
+.value{
+  font-weight: 700;
+  color: #3b5bff;
+}
+
+.score-row-right{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.score{
+  font-size: 16px;
+  font-weight: 700;
+  color: #3b5bff;
+}

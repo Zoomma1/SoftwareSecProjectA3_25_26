@@ -1,4 +1,5 @@
 import Sidebar from "../components/Sidebar/Sidebar";
+import ScoreRow from "../components/ScoreRow/ScoreRow";
 import "./Ranking.css";
 
 type RankingPlayer = {
@@ -33,37 +34,13 @@ export default function Ranking() {
         <div className="rankingListWrapper">
           <section className="rankingList">
             {rankingData.map((p) => (
-              <div key={p.id} className="rankingRow">
-                <div className="rankingLeft">
-                  {p.rank <= 3 ? (
-                    <div className="rankBadgeWrapper">
-                      {p.rank === 1 && (
-                        <img
-                          src="/icons/crown.svg"
-                          alt="Crown"
-                          className="scoreboard-crown"
-                        />
-                      )}
-                      <div className={`rankBadge${p.rank === 1 ? " rankBadge--top" : ""}`}>
-                        <span className="rankNumber">{p.rank}</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <span className="rankNumber">{p.rank}</span>
-                  )}
-                  <span className="playerName">{p.fullName}</span>
-                </div>
-                <div className="rankingMid">
-                  <span className="label">Challenges résolus</span>
-                  <span className="pipe">|</span>
-                  <span className="value">{p.solved}</span>
-                </div>
-
-                <div className="rankingRight">
-                  <span className="label">Score total</span>
-                  <span className="score">{p.score}pt</span>
-                </div>
-              </div>
+              <ScoreRow
+                key={p.id}
+                rank={p.rank}
+                fullName={p.fullName}
+                solved={p.solved}
+                score={p.score}
+              />
             ))}
           </section>
         </div>

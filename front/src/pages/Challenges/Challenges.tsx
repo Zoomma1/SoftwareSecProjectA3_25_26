@@ -1,9 +1,22 @@
+import { useState } from "react";
 import ChallengeCard from "../../components/ChallengeCard/ChallengeCard";
 import SearchBar from "../../components/SearchBar/SearchBar";
-import Sidebar from "../../components/Sidebar/Sidebar";
+import Modal from "../../components/Modal/Modal"; 
+import ChallengesForm, { type ChallengeFormData } from "./ChallengeForm/ChallengeForm";
 import './Challenges.css';
 
 export default function Challenges() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleFormSubmit = (data: ChallengeFormData) => {
+    console.log("New Challenge Submitted:", data);
+    // TODO: Send 'data' to your backend API here
+    
+    handleCloseModal();
+  };
 
   return (
   <>
@@ -57,9 +70,13 @@ export default function Challenges() {
         />
 
     </div>
-    <button className="floating-add-button" onClick={() => {}}>
+    <button className="floating-add-button" onClick={handleOpenModal}>
       <img src="/icons/plus.svg" alt="Ajouter un challenge" className="img"/>
     </button>
+
+    <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+      <ChallengesForm onSubmit={handleFormSubmit} />
+    </Modal>
   </div>
   </>
   );

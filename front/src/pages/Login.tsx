@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Auth.css";
+import Input from "../components/Input/Input";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -27,7 +28,7 @@ export default function Login() {
           <form className="authForm" onSubmit={onSubmit}>
             <label className="authLabel">
               Email
-              <input
+              <Input
                 className="authInput"
                 type="email"
                 value={email}
@@ -41,7 +42,7 @@ export default function Login() {
             <label className="authLabel">
               Mot de passe
               <div className="authPasswordWrap">
-                <input
+                <Input
                   className="authInput authInputPassword"
                   type={showPassword ? "text" : "password"}
                   value={password}

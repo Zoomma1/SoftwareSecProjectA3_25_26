@@ -204,7 +204,8 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
-  max-height: 520px;
+  /* allow the challenges area to grow with the viewport height; subtract space for header, paddings and left column so it fits nicely */
+  max-height: calc(100vh - 330px);
   overflow-y: auto;
   padding-right: 8px;
 }

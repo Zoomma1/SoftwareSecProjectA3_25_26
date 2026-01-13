@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './ScoreRow.css';
 
 type ScoreRowProps = {
@@ -10,8 +11,8 @@ type ScoreRowProps = {
   compact?: boolean;
 };
 
-export default function ScoreRow({ rank, fullName, solved, score, compact }: ScoreRowProps) {
-  return (
+export default function ScoreRow({ id, rank, fullName, solved, score, compact }: ScoreRowProps) {
+  const content = (
     <div className={`score-row ${compact ? 'score-row--compact' : ''}`}>
       <div className="score-row-left">
         {rank <= 3 ? (
@@ -41,4 +42,14 @@ export default function ScoreRow({ rank, fullName, solved, score, compact }: Sco
       </div>
     </div>
   );
+
+  if (id) {
+    return (
+      <Link to={`/profile/${id}`} className="score-row-link">
+        {content}
+      </Link>
+    );
+  }
+
+  return content;
 }

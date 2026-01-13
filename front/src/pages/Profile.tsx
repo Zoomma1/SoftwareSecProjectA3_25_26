@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import ChallengeCard from "../components/ChallengeCard/ChallengeCard";
 import "./Profile.css";
@@ -8,18 +8,18 @@ import ScoreRow from "../components/ScoreRow/ScoreRow";
 const user = {
   fullName: "Nom Prénom",
   email: "email@gmail.com",
-  solved: 1,
+  solved: 6,
   score: 75,
 };
 
-// For demo: 4 resolved, 5 unresolved
-const challenges = Array.from({ length: 9 }).map((_, i) => ({
+// Demo data: 18 challenges with first 6 resolved
+const challenges = Array.from({ length: 18 }).map((_, i) => ({
   id: i + 1,
   category: "Web",
   points: 75,
-  title: "Nom du challenge",
-  difficulty: 3,
-  isResolved: i < 4, // first 4 resolved, rest not
+  title: `Nom du challenge ${i + 1}`,
+  difficulty: (i % 5) + 1,
+  isResolved: i < 6, // first 6 resolved, rest not
 }));
 
 export default function Profile() {

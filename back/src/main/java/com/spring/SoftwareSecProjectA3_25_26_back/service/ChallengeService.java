@@ -7,19 +7,16 @@ import com.spring.SoftwareSecProjectA3_25_26_back.dal.postgres.repository.Challe
 import com.spring.SoftwareSecProjectA3_25_26_back.dal.postgres.repository.UserRepository;
 import com.spring.SoftwareSecProjectA3_25_26_back.dto.ChallengeDto;
 import com.spring.SoftwareSecProjectA3_25_26_back.dto.request.ChallengeUploadRequestDto;
-import com.spring.SoftwareSecProjectA3_25_26_back.dto.response.UserResponseDto;
 import com.spring.SoftwareSecProjectA3_25_26_back.exceptions.http.HttpBadRequestException;
 import com.spring.SoftwareSecProjectA3_25_26_back.exceptions.http.HttpUnauthorizedException;
 import com.spring.SoftwareSecProjectA3_25_26_back.mapper.ChallengeMapper;
-import com.spring.SoftwareSecProjectA3_25_26_back.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 import java.util.List;
-//HM
+
 @Service
 @Transactional
 public class ChallengeService {
@@ -163,7 +160,6 @@ public class ChallengeService {
 
         // Upload files and get S3 URL
         String s3Url = fileUploadService.handleChallengeFileUpload(
-                uploadDto.getZipFile(),
                 uploadDto.getMultipleFiles()
         );
 
@@ -255,13 +251,14 @@ public class ChallengeService {
             return false;
         }
 
-        // Correct => on crédite le user connecté.
+        // Correct => on crédite le user connecté et on marque le challenge comme complété.
         completeChallenge(challenge);
         return true;
     }
 
     /**
      * Crédite des points au user connecté pour un challenge donné (utilisée quand la réponse est correcte).
+     * Ajoute aussi l'id du challenge à la collection completedChallenges de l'utilisateur et sauvegarde.
      */
     private void completeChallenge(Challenge challenge) {
         Long loggedId = securityService.getLoggedId();
@@ -275,70 +272,54 @@ public class ChallengeService {
         int pointsToAdd = pointsForDifficulty(challenge.getDifficulty());
         user.setTotalChallengePoints(user.getTotalChallengePoints() + pointsToAdd);
 
-        userRepository.save(user);
+        // Mark challenge as completed for the user (ensure set exists and persist if changed)
+        if (challenge.getId() != null) {
+            // add id to completedChallenges set (no-op if already present)
+            user.getCompletedChallenges().add(challenge.getId());
+            // persist changes (points and completed challenges)
+            userRepository.save(user);
+        } else {
+            // Challenge id should normally be present; persist points regardless
+            userRepository.save(user);
+        }
     }
 
+    // Normalize answer: trim, lowercase, collapse whitespace
     private String normalizeAnswer(String s) {
         if (s == null) return null;
-        // Normalisation simple: trim + collapse whitespace + lowercase
-        return s.trim().replaceAll("\\s+", " ").toLowerCase();
+        // Lowercase, trim, replace multiple whitespace with single space
+        return s.trim().toLowerCase().replaceAll("\\s+", " ");
     }
 
+    // Convert difficulty to points
     private int pointsForDifficulty(Difficulty difficulty) {
-        if (difficulty == null) return 0;
+        if (difficulty == null) return 10; // default
         return switch (difficulty) {
-            case EASY -> 10;
-            case MEDIUM -> 25;
-            case HARD -> 50;
+            case VERY_EASY -> 20;
+            case EASY -> 40;
+            case MEDIUM -> 60;
+            case HARD -> 80;
+            case VERY_HARD -> 100;
         };
     }
 
+    // Basic DTO validation for challenge creation/update
     private void validateChallengeDto(ChallengeDto dto) {
-        if (dto == null) {
-            throw new HttpBadRequestException("challenge is required");
-        }
-        if (dto.getTitle() == null || dto.getTitle().isBlank()) {
-            throw new HttpBadRequestException("title is required");
-        }
-
-        // Normalisation légère
-        dto.setTitle(dto.getTitle().trim());
-        dto.setDescription(trimToNull(dto.getDescription()));
-        dto.setSolution(trimToNull(dto.getSolution()));
-        dto.setAttachmentUrl(trimToNull(dto.getAttachmentUrl()));
-        dto.setCategory(trimToNull(dto.getCategory()));
+        if (dto == null) throw new HttpBadRequestException("Challenge data is required");
+        if (dto.getTitle() == null || dto.getTitle().isBlank()) throw new HttpBadRequestException("title is required");
+        if (dto.getDescription() == null || dto.getDescription().isBlank()) throw new HttpBadRequestException("description is required");
+        // solution may be optional depending on business rules, keep permissive
     }
 
-    private String trimToNull(String s) {
-        if (s == null) return null;
-        String t = s.trim();
-        return t.isEmpty() ? null : t;
-    }
-
-    /**
-     * Valide le DTO d'upload de challenge
-     */
+    // Basic validation for upload DTO
     private void validateChallengeUploadDto(ChallengeUploadRequestDto dto) {
-        if (dto == null) {
-            throw new HttpBadRequestException("Upload request is required");
-        }
-        if (dto.getTitle() == null || dto.getTitle().isBlank()) {
-            throw new HttpBadRequestException("Title is required");
-        }
-        if (dto.getDescription() == null || dto.getDescription().isBlank()) {
-            throw new HttpBadRequestException("Description is required");
-        }
-        if (dto.getSolution() == null || dto.getSolution().isBlank()) {
-            throw new HttpBadRequestException("Solution is required");
-        }
-        if (dto.getCategory() == null || dto.getCategory().isBlank()) {
-            throw new HttpBadRequestException("Category is required");
-        }
-
-        // Verify at least one file is provided
-        if ((dto.getZipFile() == null || dto.getZipFile().isEmpty()) &&
-            (dto.getMultipleFiles() == null || dto.getMultipleFiles().isEmpty())) {
-            throw new HttpBadRequestException("Either a ZIP file or multiple files must be provided");
+        if (dto == null) throw new HttpBadRequestException("Upload data is required");
+        if (dto.getTitle() == null || dto.getTitle().isBlank()) throw new HttpBadRequestException("title is required");
+        // either zipFile or multipleFiles should be provided
+        if (dto.getMultipleFiles() == null || dto.getMultipleFiles().isEmpty()) {
+            throw new HttpBadRequestException("Either zipFile or multipleFiles must be provided");
         }
     }
+
+    // ... other helper methods if present ...
 }

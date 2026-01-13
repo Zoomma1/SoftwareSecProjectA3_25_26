@@ -32,15 +32,31 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        String token = request.getHeader("Authorization");
+        String header = request.getHeader("Authorization");
 
         try {
-            if (token == null || !token.startsWith("Bearer ")) {
+            if (header == null) {
                 chain.doFilter(request, response);
                 return;
             }
 
-            token = token.substring(7);
+            String headerTrimmed = header.trim();
+            // case-insensitive check for 'bearer '
+            if (!headerTrimmed.toLowerCase().startsWith("bearer ")) {
+                chain.doFilter(request, response);
+                return;
+            }
+
+            // Remove first 'Bearer ' prefix
+            String token = headerTrimmed.substring(7);
+            // Defensive normalization: trim and remove any accidental repeated 'Bearer ' prefixes
+            if (token != null) {
+                token = token.trim();
+                while (token.toLowerCase().startsWith("bearer ")) {
+                    token = token.substring(7).trim();
+                }
+            }
+
             if (token.isEmpty()) {
                 throw new JwtTokenInvalidException("No token found");
             }
@@ -53,19 +69,27 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             }
 
             if (jwt != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                
+                // Debug logging: claims
+                try {
+                    String claimRole = jwt.getClaim("role").asString();
+                    Long claimId = jwt.getClaim("id").asLong();
+                    LOG.debug("Decoded JWT for request {} -> id={}, role={}", request.getRequestURI(), claimId, claimRole);
+                } catch (Exception e) {
+                    LOG.debug("Decoded JWT for request {} -> unable to read id/role claims: {}", request.getRequestURI(), e.getMessage());
+                }
+
                 String role = jwt.getClaim("role").asString();
                 if (role == null || role.isBlank()) {
                     throw new JwtTokenInvalidException("Role not present in token");
                 }
 
-                
                 List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
-                
+
                 JwtAuthenticationToken authentication = new JwtAuthenticationToken(jwt, authorities);
                 authentication.setAuthenticated(true);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                LOG.debug("Authentication set in SecurityContext for request {} principal={}", request.getRequestURI(), authentication.getPrincipal());
             }
 
         } catch (AuthenticationException e) {

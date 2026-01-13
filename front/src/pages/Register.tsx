@@ -76,12 +76,15 @@ export default function Register() {
 
     setIsSubmitting(true);
     try {
+      const fullName = `${form.firstName.trim()} ${form.lastName.trim()}`.trim();
       await AuthService.register({
         email: form.email.trim(),
         password: form.password.trim(),
         username: form.email.trim().toLowerCase(),
         fullname: `${form.firstName.trim()} ${form.lastName.trim()}`,
       });
+
+      localStorage.setItem("fullName", fullName);
 
       // MVP: redirection login
       navigate("/login");

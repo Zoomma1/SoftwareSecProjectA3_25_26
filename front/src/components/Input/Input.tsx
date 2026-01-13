@@ -1,15 +1,27 @@
-import React, { type InputHTMLAttributes } from 'react';
+import React from 'react';
 import './Input.css';
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  className?: string;
-}
+type InputProps = React.ComponentPropsWithoutRef<'input'> &
+  React.ComponentPropsWithoutRef<'textarea'> & {
+    as?: 'input' | 'textarea';
+  };
 
-const Input: React.FC<InputProps> = ({ className = '', ...props }) => {
+const Input: React.FC<InputProps> = ({ className = '', as = 'input', ...props }) => {
+  const classes = `custom-input ${className}`;
+
+  if (as === 'textarea') {
+    return (
+      <textarea
+        className={classes}
+        {...(props as React.ComponentPropsWithoutRef<'textarea'>)}
+      />
+    );
+  }
+
   return (
     <input
-      className={`custom-input ${className}`}
-      {...props}
+            className={classes}
+      {...(props as React.ComponentPropsWithoutRef<'input'>)}
     />
   );
 };

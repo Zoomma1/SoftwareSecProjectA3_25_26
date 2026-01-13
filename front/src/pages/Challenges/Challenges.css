@@ -9,6 +9,11 @@
 .body-container{
   padding-left: 15vw;
   background: #F4F5FF;
+  height: 100vh; /* confine page height so internal area can scroll */
+  overflow: hidden; /* prevent global page scroll */
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 2vh; /* leave room so content bottom aligns with sidebar bottom */
 }
 
 .ChalengeGrid{
@@ -16,6 +21,40 @@
   grid-template-columns: repeat(auto-fill, 17vw);
   gap: 20px;
   padding: 0px 5vw 3vh 5vw;
+}
+
+/* wrapper to host scrollbar (like rankingListWrapper) */
+.challengeListWrapper{
+  flex: 1; /* take remaining vertical space between SearchBar/title and bottom */
+  overflow-y: auto;
+  padding-right: 12px;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+/* =========================
+   Scrollbar custom (pour Challenges)
+   Copié de Ranking.css et adapté au wrapper `.ChalengeGrid`
+========================= */
+
+/* Chrome / Edge / Safari */
+.challengeListWrapper::-webkit-scrollbar{
+  width: 10px;
+}
+
+.challengeListWrapper::-webkit-scrollbar-thumb{
+  background: rgba(59, 91, 255, 0.22);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Firefox */
+.challengeListWrapper{
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 91, 255, 0.3) transparent;
 }
 
 .floating-add-button {

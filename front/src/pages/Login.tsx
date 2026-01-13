@@ -1,18 +1,30 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Auth.css";
 import Input from "../components/Input/Input";
+import { AuthService } from "../Service/AuthService";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: brancher API login ici
-    console.log({ email, password, remember });
+    setError("");
+    setIsSubmitting(true);
+    try {
+      await AuthService.login({ email, password });
+      navigate("/challenges");
+    } catch (err: any) {
+      setError(err.message || "Erreur lors de la connexion");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -26,6 +38,7 @@ export default function Login() {
           <p className="authSubtitle">Prêt à faire des challenges ?</p>
 
           <form className="authForm" onSubmit={onSubmit}>
+            {error && <div className="authError" style={{ marginBottom: "1rem" }}>{error}</div>}
             <label className="authLabel">
               Email
               <Input
@@ -84,8 +97,8 @@ export default function Login() {
               </Link>
             </div>
 
-            <button className="authPrimaryBtn" type="submit">
-              Se connecter
+            <button className="authPrimaryBtn" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Connexion..." : "Se connecter"}
             </button>
 
             <p className="authBottomText">

@@ -8,7 +8,7 @@ import Ranking from "./pages/Ranking.tsx";
 import ChallengeDetail from "./pages/ChallengeDetail.tsx";
 import "./index.css";
 import Sidebar from "./components/Sidebar/Sidebar.tsx";
-import { AuthProvider } from "./contexts/AuthContext.tsx";
+import { AuthProvider } from "./Service/AuthContext.tsx";
 import Profile from "./pages/Profile.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

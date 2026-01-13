@@ -7,18 +7,21 @@ import Register from "./pages/Register.tsx";
 import Ranking from "./pages/Ranking.tsx";
 import ChallengeDetail from "./pages/ChallengeDetail.tsx";
 import "./index.css";
+import Sidebar from "./components/Sidebar/Sidebar.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <Routes>
-          <Route path="/" element={<Navigate to="/challenges" replace />} />
-          <Route path="/challenges" element={<Challenges />} />
-          <Route path="/challenges/:id" element={<ChallengeDetail />} />
-          <Route path="/ranking" element={<Ranking />} />
+        <Routes>
+          <Route element={<Sidebar />}>
+            <Route path="/" element={<Navigate to="/challenges" replace />} />
+            <Route path="/challenges" element={<Challenges />} />
+            <Route path="/challenges/:id" element={<ChallengeDetail />} />
+            <Route path="/ranking" element={<Ranking />} />
+          </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-      </Routes>
+        </Routes>
     </BrowserRouter>
   </React.StrictMode>
 );

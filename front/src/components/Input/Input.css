@@ -27,3 +27,8 @@
 .custom-input:focus::placeholder {
   color: #9ca3af;
 }
+
+textarea.custom-input {
+  height: auto;
+  padding: 12px 14px;
+}

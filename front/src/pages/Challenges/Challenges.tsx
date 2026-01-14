@@ -3,32 +3,65 @@ import ChallengeCard from "../../components/ChallengeCard/ChallengeCard";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import Modal from "../../components/Modal/Modal"; 
 import ChallengesForm, { type ChallengeFormData } from "./ChallengeForm/ChallengeForm";
+import { ChallengeService, type Challenge } from "../../Service/ChallengeService";
 import './Challenges.css';
+
+const DIFFICULTY_MAP: Record<string, { points: number; level: number }> = {
+  VERY_EASY: { points: 20, level: 1 },
+  EASY: { points: 40, level: 2 },
+  MEDIUM: { points: 60, level: 3 },
+  HARD: { points: 80, level: 4 },
+  VERY_HARD: { points: 100, level: 5 },
+};
 
 export default function Challenges() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
   useDisableBodyScroll();
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  const handleFormSubmit = (data: ChallengeFormData) => {
-    console.log("New Challenge Submitted:", data);
-    // TODO: Send 'data' to your backend API here
-    
-    handleCloseModal();
+  const handleFormSubmit = async (data: ChallengeFormData) => {
+    try {
+      const formData = new FormData();
+      formData.append("title", "TTitre");
+      formData.append("description", "description");
+      formData.append("solution", "solution");
+      formData.append("category", "Web");
+      formData.append("difficulty", "MEDIUM");
+      if (data.files) {
+        console.log("Files:", data.files);
+        data.files.forEach((file) => {
+          console.log("here");
+          formData.append("multipleFiles", file);
+        });
+      }
+
+      await ChallengeService.createWithFiles(formData);
+
+      // Refresh the list and close modal
+      const updatedList = await ChallengeService.getLatest();
+      if (Array.isArray(updatedList)) {
+        setChallenges(updatedList);
+      }
+      handleCloseModal();
+    } catch (err) {
+      console.error("Erreur création challenge:", err);
+      alert("Une erreur est survenue lors de la création du challenge.");
+    }
   };
 
-  // sample data generator to create many challenge cards for scrollbar testing
-  const sampleChallenges = Array.from({ length: 30 }).map((_, i) => ({
-    id: i,
-    category: i % 5 === 0 ? "SQL Injection" : "Web",
-    points: 10 + (i % 10) * 10,
-    title: `Challenge de test ${i + 1}`,
-    difficulty: (i % 5) + 1,
-    isResolved: i % 3 === 0,
-  }));
+  useEffect(() => {
+    ChallengeService.getLatest()
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setChallenges(data);
+        }
+      })
+      .catch((err) => console.error("Erreur chargement challenges:", err));
+  }, []);
 
   return (
     <>
@@ -37,7 +70,7 @@ export default function Challenges() {
         <h1 className="title">Challenges</h1>
         <div className="challengeListWrapper">
           <div className="ChalengeGrid">
-            {sampleChallenges
+            {challenges
               .filter((c) =>
                 c.title.toLowerCase().includes(query.trim().toLowerCase())
               )
@@ -45,10 +78,10 @@ export default function Challenges() {
               <ChallengeCard
                 key={c.id}
                 category={c.category}
-                points={c.points}
+                points={DIFFICULTY_MAP[c.difficulty]?.points || 0}
                 title={c.title}
-                difficulty={c.difficulty}
-                isResolved={c.isResolved}
+                difficulty={DIFFICULTY_MAP[c.difficulty]?.level || 0}
+                isResolved={c.isResolved ?? false}
               />
             ))}
           </div>

@@ -5,6 +5,15 @@ import ChallengeCard from "../components/ChallengeCard/ChallengeCard";
 import "./Profile.css";
 import Input from "../components/Input/Input";
 import ScoreRow from "../components/ScoreRow/ScoreRow";
+import { ChallengeService, type Challenge } from "../Service/ChallengeService";
+
+const DIFFICULTY_MAP: Record<string, { points: number; level: number }> = {
+  VERY_EASY: { points: 20, level: 1 },
+  EASY: { points: 40, level: 2 },
+  MEDIUM: { points: 60, level: 3 },
+  HARD: { points: 80, level: 4 },
+  VERY_HARD: { points: 100, level: 5 },
+};
 
 function decodeJwtPayload(token: string): any | null {
   try {
@@ -49,6 +58,19 @@ export default function Profile() {
   const [user, setUser] = useState<UserModel | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
+  
+
+  useEffect(() => {
+      ChallengeService.getLatest()
+        .then((data) => {
+          if (Array.isArray(data)) {
+            setChallenges(data);
+          }
+        })
+        .catch((err) => console.error("Erreur chargement challenges:", err));
+    }, []);
+  
 
   useEffect(() => {
   let mounted = true;
@@ -180,7 +202,13 @@ export default function Profile() {
 
               <div className="profileChallengesGrid">
                 {filteredChallenges.map((c) => (
-                  <ChallengeCard key={c.id} {...c} />
+                  <ChallengeCard 
+                  key={c.id}
+                  category={c.category}
+                  points={DIFFICULTY_MAP[c.difficulty]?.points || 0}
+                  title={c.title}
+                  difficulty={DIFFICULTY_MAP[c.difficulty]?.level || 0}
+                  isResolved={c.isResolved ?? false} />
                 ))}
               </div>
             </div>

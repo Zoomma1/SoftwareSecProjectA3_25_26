@@ -67,16 +67,16 @@ services:
     networks:
       - prod
 
-  # Remove this comment once there is a first version of the frontend
-  # dev-front:
-  #   build:
-  #     context: ./front
-  #     dockerfile: Dockerfile
-  #   container_name: dev-front
-  #   ports:
-  #     - 4200:80
-  #   networks:
-  #     - dev
+  dev-front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: dev-front
+    ports:
+      - 4200:80
+    networks:
+      - dev
+
 volumes:
   dev-db-data:
   serv-db-data:

@@ -2,7 +2,6 @@ package com.spring.SoftwareSecProjectA3_25_26_back.dal.postgres.repository;
 
 import com.spring.SoftwareSecProjectA3_25_26_back.dal.model.enums.Difficulty;
 import com.spring.SoftwareSecProjectA3_25_26_back.dal.model.postgres.Challenge;
-import com.spring.SoftwareSecProjectA3_25_26_back.dal.model.postgres.User;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,9 +13,7 @@ import java.util.Optional;
 @Hidden
 public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
-    Optional<List<Challenge>> findAllByUser(User user);
-
-    Optional<List<Challenge>> findAllByUser_Id(Long userId);
+    Optional<List<Challenge>> findAllByUserId(Long userId);
 
     Optional<List<Challenge>> findAllByCategoryIgnoreCase(String category);
 
@@ -28,5 +25,5 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
     List<Challenge> findTop10ByOrderByCreatedAtDesc();
 
-    List<Challenge> findTop10ByUser_IdOrderByCreatedAtDesc(Long userId);
+    List<Challenge> findTop10ByUserIdOrderByCreatedAtDesc(Long userId);
 }

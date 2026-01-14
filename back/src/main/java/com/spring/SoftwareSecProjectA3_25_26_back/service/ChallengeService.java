@@ -51,7 +51,7 @@ public class ChallengeService {
         if (userId == null) {
             throw new HttpBadRequestException("userId is required");
         }
-        return challengeRepository.findTop10ByUser_IdOrderByCreatedAtDesc(userId).stream()
+        return challengeRepository.findTop10ByUserIdOrderByCreatedAtDesc(userId).stream()
                 .map(ChallengeMapper.INSTANCE::toDto)
                 .toList();
     }
@@ -64,7 +64,7 @@ public class ChallengeService {
         if (userId == null) {
             throw new HttpBadRequestException("userId is required");
         }
-        return challengeRepository.findAllByUser_Id(userId)
+        return challengeRepository.findAllByUserId(userId)
                 .orElse(Collections.emptyList())
                 .stream()
                 .map(ChallengeMapper.INSTANCE::toDto)
@@ -137,7 +137,7 @@ public class ChallengeService {
 
         Challenge challenge = ChallengeMapper.INSTANCE.toEntity(dto);
         // la migration impose NOT NULL sur user_id
-        challenge.setUser(user);
+        challenge.setUserId(user.getId());
 
         Challenge saved = challengeRepository.save(challenge);
         return ChallengeMapper.INSTANCE.toDto(saved);
@@ -165,7 +165,7 @@ public class ChallengeService {
 
         // Create Challenge entity
         Challenge challenge = new Challenge();
-        challenge.setUser(user);
+        challenge.setUserId(user.getId());
         challenge.setTitle(uploadDto.getTitle());
         challenge.setDescription(uploadDto.getDescription());
         challenge.setSolution(uploadDto.getSolution());
@@ -189,7 +189,7 @@ public class ChallengeService {
         Challenge existing = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new HttpBadRequestException("Challenge not found"));
 
-        Long ownerId = existing.getUser() != null ? existing.getUser().getId() : null;
+        Long ownerId = existing.getUserId() != null ? existing.getUserId() : null;
         if (ownerId == null || !securityService.validUSERPerformAction(ownerId.toString())) {
             throw new HttpUnauthorizedException("Not allowed");
         }
@@ -214,7 +214,7 @@ public class ChallengeService {
         Challenge existing = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new HttpBadRequestException("Challenge not found"));
 
-        Long ownerId = existing.getUser() != null ? existing.getUser().getId() : null;
+        Long ownerId = existing.getUserId() != null ? existing.getUserId() : null;
         if (ownerId == null || !securityService.validUSERPerformAction(ownerId.toString())) {
             throw new HttpUnauthorizedException("Not allowed");
         }

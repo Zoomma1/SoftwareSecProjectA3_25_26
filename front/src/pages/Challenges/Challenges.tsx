@@ -23,8 +23,6 @@ export default function Challenges() {
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  console.log("Local storage token:", localStorage.getItem("token"));
-
   const handleFormSubmit = async (data: ChallengeFormData) => {
     try {
       const formData = new FormData();

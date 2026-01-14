@@ -19,9 +19,8 @@ public class Challenge {
     private Long id;
 
      /** FK vers app_user(id) - NOT NULL dans la migration. */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @NotBlank
     private String title;

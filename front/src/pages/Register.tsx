@@ -80,7 +80,7 @@ export default function Register() {
       await AuthService.register({
         email: form.email.trim(),
         password: form.password.trim(),
-        username: form.email.trim().toLowerCase(),
+        username: `${form.firstName.trim()} ${form.lastName.trim()}`,
         fullname: `${form.firstName.trim()} ${form.lastName.trim()}`,
       });
 

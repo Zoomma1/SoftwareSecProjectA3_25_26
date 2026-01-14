@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import './ScoreRow.css';
 
@@ -9,9 +8,10 @@ type ScoreRowProps = {
   solved: number;
   score: number;
   compact?: boolean;
+  onClick?: (id?: string) => void;
 };
 
-export default function ScoreRow({ id, rank, fullName, solved, score, compact }: ScoreRowProps) {
+export default function ScoreRow({ id, rank, fullName, solved, score, compact, onClick }: ScoreRowProps) {
   const content = (
     <div className={`score-row ${compact ? 'score-row--compact' : ''}`}>
       <div className="score-row-left">
@@ -42,6 +42,15 @@ export default function ScoreRow({ id, rank, fullName, solved, score, compact }:
       </div>
     </div>
   );
+
+  // If a click handler is provided prefer that (allow parent to show profile inline)
+  if (onClick && id) {
+    return (
+      <div className="score-row-link score-row-button" onClick={() => onClick(id)}>
+        {content}
+      </div>
+    );
+  }
 
   if (id) {
     return (

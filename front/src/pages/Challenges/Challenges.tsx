@@ -7,6 +7,7 @@ import './Challenges.css';
 
 export default function Challenges() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [query, setQuery] = useState("");
   useDisableBodyScroll();
 
   const handleOpenModal = () => setIsModalOpen(true);
@@ -32,11 +33,15 @@ export default function Challenges() {
   return (
     <>
       <div className="body-container">
-        <SearchBar />
+        <SearchBar value={query} onChange={setQuery} />
         <h1 className="title">Challenges</h1>
         <div className="challengeListWrapper">
           <div className="ChalengeGrid">
-            {sampleChallenges.map((c) => (
+            {sampleChallenges
+              .filter((c) =>
+                c.title.toLowerCase().includes(query.trim().toLowerCase())
+              )
+              .map((c) => (
               <ChallengeCard
                 key={c.id}
                 category={c.category}

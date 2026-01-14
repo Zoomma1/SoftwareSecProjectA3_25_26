@@ -29,12 +29,17 @@
     cursor: pointer;
 }
 
-.search-bar img,
 .filter-icon {
-    width : 1vw;
-    padding-left: 1vw;
-    filter: drop-shadow(0 100px 0 #515DEF) drop-shadow(0 0 0.5px #515DEF);
-    transform: translateY(-100px);
+  width: 1vw;
+  padding-left: 1vw;
+  filter: drop-shadow(0 100px 0 #515DEF) drop-shadow(0 0 0.5px #515DEF);
+  transform: translateY(0);
+}
+
+/* search icon: slightly larger and nudged left */
+.search-icon {
+  width: 1.4vw;
+  transform: translateY(0);
 }
 
 .Filter:hover {

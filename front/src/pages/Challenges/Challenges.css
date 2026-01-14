@@ -20,7 +20,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, 17vw);
   gap: 20px;
-  padding: 0px 5vw 3vh 5vw;
+  padding: 0px 0vw 3vh 5vw;
 }
 
 /* wrapper to host scrollbar (like rankingListWrapper) */

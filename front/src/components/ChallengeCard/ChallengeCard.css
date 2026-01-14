@@ -27,6 +27,9 @@
 .card-header {
   height: 120px;
   background-color: var(--bg-light);
+  background-size: 50%;
+  background-position: center;
+  background-repeat: no-repeat;
   border-radius: 0.75rem;
   margin-bottom: 1rem;
   padding: 0.75rem;

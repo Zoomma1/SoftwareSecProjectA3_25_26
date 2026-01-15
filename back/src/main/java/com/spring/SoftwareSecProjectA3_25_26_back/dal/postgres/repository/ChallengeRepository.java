@@ -25,4 +25,6 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
     List<Challenge> findTop10ByOrderByCreatedAtDesc();
 
     List<Challenge> findTop10ByUserIdOrderByCreatedAtDesc(Long userId);
+
+    List<Challenge> findChallengesByIdIn(List<Long> ids);
 }

@@ -56,6 +56,16 @@ public class ChallengeService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<ChallengeDto> getChallengesByIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return challengeRepository.findChallengesByIdIn(ids).stream()
+                .map(ChallengeMapper.INSTANCE::toDto)
+                .toList();
+    }
+
     /**
      * Liste les challenges d'un user.
      */

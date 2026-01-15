@@ -76,18 +76,28 @@ export default function Register() {
 
     setIsSubmitting(true);
     try {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(form.password.trim());
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashedPassword = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+
       const fullName = `${form.firstName.trim()} ${form.lastName.trim()}`.trim();
       await AuthService.register({
         email: form.email.trim(),
-        password: form.password.trim(),
+        password: hashedPassword,
         username: `${form.firstName.trim()} ${form.lastName.trim()}`,
         fullname: `${form.firstName.trim()} ${form.lastName.trim()}`,
       });
 
       localStorage.setItem("fullName", fullName);
 
-      // MVP: redirection login
-      navigate("/login");
+      // Auto-login and redirect to challenges
+      await AuthService.login({
+        email: form.email.trim(),
+        password: hashedPassword,
+      });
+      navigate("/challenges");
     } catch (error: any) {
       console.error(error);
       alert(error.message || "Erreur lors de l'inscription");

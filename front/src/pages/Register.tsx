@@ -44,6 +44,13 @@ export default function Register() {
   const [showConfirmPwd, setShowConfirmPwd] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const passwordRequirements = [
+    { label: "8 caractères minimum", met: form.password.length >= 8 },
+    { label: "Une majuscule", met: /[A-Z]/.test(form.password) },
+    { label: "Une minuscule", met: /[a-z]/.test(form.password) },
+    { label: "Un chiffre", met: /[0-9]/.test(form.password) },
+  ];
+
   const canSubmit = useMemo(() => {
     const hasUpperCase = /[A-Z]/.test(form.password);
     const hasLowerCase = /[a-z]/.test(form.password);
@@ -173,7 +180,7 @@ export default function Register() {
             />
 
             <PasswordField
-              label="Mot de passe (8 caractères minimum, minuscule, majuscule, chiffre)"
+              label="Mot de passe"
               value={form.password}
               error={errors.password}
               show={showPwd}
@@ -181,6 +188,15 @@ export default function Register() {
               onChange={(v) => setField("password", v)}
               strength={calculateStrength(form.password)}
             />
+
+            <div style={{ marginTop: "8px", marginBottom: "16px", fontSize: "0.85rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px" }}>
+              {passwordRequirements.map((req, i) => (
+                <div key={i} style={{ color: req.met ? "#22c55e" : "#64748b", display: "flex", alignItems: "center", gap: "6px", transition: "color 0.2s" }}>
+                  <span style={{ fontSize: "1.1em" }}>{req.met ? "✓" : "○"}</span>
+                  <span>{req.label}</span>
+                </div>
+              ))}
+            </div>
 
             <PasswordField
               label="Confirmation mot de passe"

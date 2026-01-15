@@ -144,6 +144,7 @@ export default function Challenges() {
               .map((c) => (
               <ChallengeCard
                 key={c.id}
+                id={c.id}
                 category={c.category}
                 points={DIFFICULTY_MAP[c.difficulty]?.points || 0}
                 title={c.title}

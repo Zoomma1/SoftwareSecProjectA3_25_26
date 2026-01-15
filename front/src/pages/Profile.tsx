@@ -15,33 +15,12 @@ const DIFFICULTY_MAP: Record<string, { points: number; level: number }> = {
   VERY_HARD: { points: 100, level: 5 },
 };
 
-function decodeJwtPayload(token: string): any | null {
-  try {
-    const parts = token.split(".");
-    if (parts.length !== 3) return null;
-
-    let base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-    while (base64.length % 4) base64 += "=";
-
-    const json = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map((c) => "%" + c.charCodeAt(0).toString(16).padStart(2, "0"))
-        .join("")
-    );
-
-    return JSON.parse(json);
-  } catch {
-    return null;
-  }
-}
-
-type UserModel = {
-  fullName: string;
+ type UserModel = {
+  displayName: string;
   email: string;
   solved: number;
   score: number;
-};
+ };
 
 export default function Profile() {
   const [showResolved, setShowResolved] = useState(false);
@@ -67,16 +46,6 @@ export default function Profile() {
 
   (async () => {
     try {
-      // 1) tentative fullName depuis cache (set au register)
-      const cachedFullName = localStorage.getItem("fullName");
-
-      // 2) tentative fullName depuis JWT
-      const token = localStorage.getItem("token");
-      const payload = token ? decodeJwtPayload(token) : null;
-      const jwtFullName =
-        payload?.fullname || payload?.fullName || payload?.name || null;
-
-      // 3) appel /users/me pour email + stats
       const model = await UserService.loadCurrentUser();
       if (!mounted) return;
 
@@ -90,14 +59,11 @@ export default function Profile() {
       const solved = data.completedChallenges?.length ?? 0;
       const score = data.totalChallengePoints ?? 0;
 
-      // IMPORTANT: username = email chez toi => on ne l’utilise pas comme nom
-      const displayName =
-        cachedFullName ||
-        jwtFullName ||
-        "Utilisateur";
+      const apiUsername = (data.username ?? data.userName ?? "").trim();
+      const displayName = apiUsername || "Utilisateur";
 
       setUser({
-        fullName: displayName,
+        displayName,
         email,
         solved,
         score,
@@ -135,7 +101,7 @@ export default function Profile() {
                 <div className="profileAvatar" />
               </div>
               <div className="profileName">
-                {isLoading ? "Chargement..." : loadError ? "Utilisateur" : user?.fullName}
+                {isLoading ? "Chargement..." : loadError ? "Utilisateur" : user?.displayName}
               </div>
               <div className="profileInfo">
                 <div className="profileInfoTitle">Information</div>
@@ -160,7 +126,7 @@ export default function Profile() {
             <div className="profileStatsBanner">
               <ScoreRow
               rank={1}
-              fullName={user?.fullName ?? "Utilisateur"}
+              fullName={user?.displayName ?? "Utilisateur"}
               solved={user?.solved ?? 0}
               score={user?.score ?? 0}
               compact

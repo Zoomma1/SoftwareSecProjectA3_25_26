@@ -13,6 +13,8 @@ export interface Challenge {
 }
 const API_URL = import.meta.env.VITE_API_URL_LOCAL;
 
+import { AuthService } from "./AuthService";
+
 export const ChallengeService = {
   // Get latest challenges
   getLatest: async (): Promise<Challenge[]> => {
@@ -94,5 +96,20 @@ export const ChallengeService = {
 
     return response.json();
 },
+
+  // Get challenge by id (use AuthService.apiCall so Authorization header is included)
+  getById: async (id: number): Promise<Challenge> => {
+    const resp = await AuthService.apiCall(`/challenges/${id}`, { method: "GET" });
+    if (!resp.ok) {
+      const errorData = await resp.json().catch(() => ({}));
+      console.error("Erreur chargement challenge:", resp.status, errorData);
+      if (Object.keys(errorData).length === 0) {
+        throw new Error(`Erreur serveur (${resp.status}). Vérifiez que le backend est lancé.`);
+      }
+      throw new Error(errorData.message || "Une erreur est survenue lors du chargement du challenge");
+    }
+
+    return resp.json();
+  },
 
 };

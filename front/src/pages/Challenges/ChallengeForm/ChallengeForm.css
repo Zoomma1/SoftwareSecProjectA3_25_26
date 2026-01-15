@@ -100,3 +100,41 @@
   color: #ff4d4f;
   font-weight: bold;
 }
+
+.category-radio-group {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.category-radio-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 10px 20px;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  color: #64748b;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.category-radio-label.selected {
+  background-color: #515DEF;
+  color: white;
+  border-color: #515DEF;
+  box-shadow: 0 4px 12px rgba(81, 93, 239, 0.3);
+}
+
+.category-radio-input {
+  display: none;
+}
+
+.custom-category-container {
+  margin-bottom: 1rem;
+}

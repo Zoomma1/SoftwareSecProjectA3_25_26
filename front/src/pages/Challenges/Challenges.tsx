@@ -47,15 +47,14 @@ export default function Challenges() {
   const handleFormSubmit = async (data: ChallengeFormData) => {
     try {
       const formData = new FormData();
-      formData.append("title", "TTitre");
-      formData.append("description", "description");
-      formData.append("solution", "solution");
-      formData.append("category", "Web");
-      formData.append("difficulty", "MEDIUM");
-      if (data.files) {
-        console.log("Files:", data.files);
+      formData.append("title", data.title);
+      formData.append("description", data.description);
+      formData.append("solution", data.answer);
+      formData.append("category", data.category);
+      formData.append("difficulty", data.difficulty);
+
+      if (data.files && data.files.length > 0) {
         data.files.forEach((file) => {
-          console.log("here");
           formData.append("multipleFiles", file);
         });
       }
@@ -131,7 +130,7 @@ export default function Challenges() {
         </div>
         <h1 className="title">Challenges</h1>
         <div className="challengeListWrapper">
-          <div className="ChalengeGrid">
+          <div className="ChallengeGrid">
             {challenges
               .filter((c) =>
                 c.title.toLowerCase().includes(query.trim().toLowerCase())

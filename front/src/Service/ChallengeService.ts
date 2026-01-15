@@ -18,10 +18,12 @@ import { AuthService } from "./AuthService";
 export const ChallengeService = {
   // Get latest challenges
   getLatest: async (): Promise<Challenge[]> => {
+      const token = localStorage.getItem("token");
       const response = await fetch(`${API_URL}/challenges/latest`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
     });
     if (!response.ok) {
@@ -39,9 +41,11 @@ export const ChallengeService = {
 
   // Create a challenge with files (Multipart)
   createWithFiles: async (formData: FormData): Promise<Challenge> => {
+    const token = localStorage.getItem("token");
     const response = await fetch(`${API_URL}/challenges/upload`, {
       method: "POST",
       headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: formData,
     });
@@ -59,10 +63,12 @@ export const ChallengeService = {
 
   // Get challenge by category
   getByCategory: async (category: string): Promise<Challenge[]> => {
+    const token = localStorage.getItem("token");
     const response = await fetch(`${API_URL}/challenges/category/${category}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
     });
     if (!response.ok) {
@@ -79,10 +85,12 @@ export const ChallengeService = {
 
   // Get challenge by difficulty
   getByDifficulty: async (difficulty: string): Promise<Challenge[]> => {
+    const token = localStorage.getItem("token");
     const response = await fetch(`${API_URL}/challenges/difficulty/${difficulty}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
     });
     if (!response.ok) {

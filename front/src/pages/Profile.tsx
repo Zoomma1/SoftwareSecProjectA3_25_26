@@ -36,16 +36,6 @@ function decodeJwtPayload(token: string): any | null {
   }
 }
 
-// Demo data: 18 challenges with first 6 resolved
-const challenges = Array.from({ length: 18 }).map((_, i) => ({
-  id: i + 1,
-  category: "Web",
-  points: 75,
-  title: `Nom du challenge ${i + 1}`,
-  difficulty: (i % 5) + 1,
-  isResolved: i < 6, // first 6 resolved, rest not
-}));
-
 type UserModel = {
   fullName: string;
   email: string;
@@ -125,9 +115,13 @@ export default function Profile() {
   };
 }, []);
 
-  const filteredChallenges = challenges.filter((c) =>
-    showResolved ? c.isResolved : !c.isResolved
-  );
+  const filteredChallenges = challenges
+    .filter((c) => (showResolved ? c.isResolved : !c.isResolved))
+    .sort((a, b) => {
+      const levelA = DIFFICULTY_MAP[a.difficulty]?.level || 0;
+      const levelB = DIFFICULTY_MAP[b.difficulty]?.level || 0;
+      return levelA - levelB;
+    });
 
   return (
     <div className="profileLayout">

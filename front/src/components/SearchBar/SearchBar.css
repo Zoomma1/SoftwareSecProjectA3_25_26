@@ -1,15 +1,7 @@
-.search-bar-container {
-  position: relative;
-      display: flex;
-  margin: 10vh 1vw 0vh 52vw;
-  gap: 1rem;
-}
-
-.search-bar,
-.Filter {
+.search-bar {
   display: flex;
   gap: 0.5rem;
-      border-radius: 14px;
+  border-radius: 14px;
   font-size: 1rem;
   background-color: white;
   box-shadow: 0 3px 6px #d6dce5;
@@ -22,28 +14,10 @@
     padding: 10px;
 }
 
-.Filter {
-    padding: 10px 10px 10px 0px;
-    height: auto;
-    border: none;
-    cursor: pointer;
-}
-
-.filter-icon {
-  width: 1vw;
-  padding-left: 1vw;
-  filter: drop-shadow(0 100px 0 #515DEF) drop-shadow(0 0 0.5px #515DEF);
-  transform: translateY(0);
-}
-
 /* search icon: slightly larger and nudged left */
 .search-icon {
   width: 1.4vw;
   transform: translateY(0);
-}
-
-.Filter:hover {
-    transform: scale(1.1);
 }
 
 .search-bar input {

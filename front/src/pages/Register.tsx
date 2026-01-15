@@ -17,6 +17,17 @@ function isEmailValid(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
+function calculateStrength(pwd: string): number {
+  let score = 0;
+  if (!pwd) return 0;
+  if (pwd.length >= 8) score++;
+  if (pwd.length >= 12) score++;
+  if (/[A-Z]/.test(pwd)) score++;
+  if (/[0-9]/.test(pwd)) score++;
+  if (/[^A-Za-z0-9]/.test(pwd)) score++;
+  return score;
+}
+
 export default function Register() {
   const navigate = useNavigate();
 
@@ -34,11 +45,18 @@ export default function Register() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const canSubmit = useMemo(() => {
+    const hasUpperCase = /[A-Z]/.test(form.password);
+    const hasLowerCase = /[a-z]/.test(form.password);
+    const hasNumber = /[0-9]/.test(form.password);
+
     return (
       form.lastName.trim() &&
       form.firstName.trim() &&
       isEmailValid(form.email) &&
       form.password.length >= 8 &&
+      hasUpperCase &&
+      hasLowerCase &&
+      hasNumber &&
       form.confirmPassword.length >= 8 &&
       form.password === form.confirmPassword
     );
@@ -57,6 +75,7 @@ export default function Register() {
     else if (!isEmailValid(form.email)) e.email = "Email invalide";
     if (!form.password) e.password = "Mot de passe requis";
     else if (form.password.length < 8) e.password = "8 caractères minimum";
+    else if (!/[A-Z]/.test(form.password) || !/[a-z]/.test(form.password) || !/[0-9]/.test(form.password)) e.password = "Doit contenir majuscule, minuscule et chiffre";
     if (!form.confirmPassword) e.confirmPassword = "Confirmation requise";
     else if (form.confirmPassword.length < 8) e.confirmPassword = "8 caractères minimum";
     if (form.password && form.confirmPassword && form.password !== form.confirmPassword) {
@@ -154,12 +173,13 @@ export default function Register() {
             />
 
             <PasswordField
-              label="Mot de passe"
+              label="Mot de passe (8 caractères minimum, minuscule, majuscule, chiffre)"
               value={form.password}
               error={errors.password}
               show={showPwd}
               onToggle={() => setShowPwd((s) => !s)}
               onChange={(v) => setField("password", v)}
+              strength={calculateStrength(form.password)}
             />
 
             <PasswordField
@@ -225,8 +245,18 @@ function PasswordField(props: {
   show: boolean;
   onToggle: () => void;
   onChange: (value: string) => void;
+  strength?: number;
 }) {
-  const { label, value, error, show, onToggle, onChange } = props;
+  const { label, value, error, show, onToggle, onChange, strength } = props;
+
+  // Determine color based on strength (0-5)
+  const getStrengthColor = (s: number) => {
+    if (s <= 2) return "#ef4444"; // Red
+    if (s === 3) return "#eab308"; // Yellow
+    return "#22c55e"; // Green
+  };
+
+  const strengthPercent = Math.min(100, Math.max(0, ((strength || 0) / 5) * 100));
 
   return (
     <div className="authField">
@@ -248,6 +278,19 @@ function PasswordField(props: {
           />
         </button>
       </div>
+
+      {strength !== undefined && value.length > 0 && (
+        <div style={{ marginTop: "8px", height: "4px", width: "100%", background: "#e2e8f0", borderRadius: "2px", overflow: "hidden" }}>
+          <div
+            style={{
+              height: "100%",
+              width: `${strengthPercent}%`,
+              background: getStrengthColor(strength || 0),
+              transition: "width 0.3s ease, background-color 0.3s ease"
+            }}
+          />
+        </div>
+      )}
 
       {error ? <div className="authError">{error}</div> : null}
     </div>

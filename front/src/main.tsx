@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Navigate, Route, Routes } from "react-router-dom";
 import Challenges from "./pages/Challenges/Challenges.tsx";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
@@ -13,7 +13,7 @@ import Profile from "./pages/Profile.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <MemoryRouter>
       <AuthProvider>
           <Routes>
             <Route element={<Sidebar />}>
@@ -27,6 +27,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Route path="/register" element={<Register />} />
           </Routes>
       </AuthProvider>
-    </BrowserRouter>
+    </MemoryRouter>
   </React.StrictMode>
 );

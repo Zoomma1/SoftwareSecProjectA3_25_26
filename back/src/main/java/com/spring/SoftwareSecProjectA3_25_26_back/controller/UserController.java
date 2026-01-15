@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Login")
+@Tag(name = "User")
 
 @RestController
 @RequestMapping("/users")
@@ -37,20 +37,6 @@ public class UserController {
     @GetMapping("/me")
     public UserResponseDto getCurrentUser() {
         return userService.getCurrentUser();
-    }
-
-    // Mark a challenge as completed for a user
-    @PostMapping(path = "/{id}/completed-challenges/{challengeId}")
-    public UserResponseDto markChallengeCompleted(@PathVariable("id") Long userId,
-                                                  @PathVariable("challengeId") Long challengeId) {
-        return userService.markChallengeCompleted(userId, challengeId);
-    }
-
-    // Unmark a challenge as completed for a user
-    @DeleteMapping(path = "/{id}/completed-challenges/{challengeId}")
-    public UserResponseDto unmarkChallengeCompleted(@PathVariable("id") Long userId,
-                                                    @PathVariable("challengeId") Long challengeId) {
-        return userService.unmarkChallengeCompleted(userId, challengeId);
     }
 
 }

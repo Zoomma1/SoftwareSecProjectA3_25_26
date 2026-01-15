@@ -22,7 +22,6 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
     Optional<List<Challenge>> findAllByCategoryIgnoreCaseAndDifficulty(String category, Difficulty difficulty);
 
     Optional<List<Challenge>> findAllByTitleContainingIgnoreCase(String title);
-
     List<Challenge> findTop10ByOrderByCreatedAtDesc();
 
     List<Challenge> findTop10ByUserIdOrderByCreatedAtDesc(Long userId);

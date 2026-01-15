@@ -85,3 +85,36 @@
   width: 24px;
   filter: invert(1);
 }
+
+.filters-container {
+  position: relative;
+  display: flex;
+  margin: 10vh 1vw 0vh 25vw;
+  gap: 1rem;
+}
+
+.Filter {
+    padding: 10px;
+    height: auto;
+    border: none;
+    cursor: pointer;
+}
+
+.Filter:hover {
+    transform: scale(1.1);
+}
+
+.filter-icon {
+  width: 1.5vw;
+  filter: invert(32%) sepia(54%) saturate(4649%) hue-rotate(226deg) brightness(98%) contrast(92%);
+}
+
+.Filter {
+  display: flex;
+  gap: 0.5rem;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  background-color: white;
+  box-shadow: 0 3px 6px #d6dce5;
+  overflow: hidden;
+}

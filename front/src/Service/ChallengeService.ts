@@ -27,6 +27,11 @@ export const ChallengeService = {
       },
     });
     if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+        throw new Error("Session expirée");
+      }
       const errorData = await response.json().catch(() => ({}));
       console.error("Erreur chargement challenges:", response.status, errorData);
       if (Object.keys(errorData).length === 0) {
@@ -50,6 +55,11 @@ export const ChallengeService = {
       body: formData,
     });
     if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+        throw new Error("Session expirée");
+      }
       const errorData = await response.json().catch(() => ({}));
       console.error("Erreur création challenge:", response.status, errorData);
       if (Object.keys(errorData).length === 0) {
@@ -72,6 +82,11 @@ export const ChallengeService = {
       },
     });
     if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+        throw new Error("Session expirée");
+      }
       const errorData = await response.json().catch(() => ({}));
       console.error("Erreur chargement challenges par catégorie:", response.status, errorData);
       if (Object.keys(errorData).length === 0) {
@@ -94,6 +109,11 @@ export const ChallengeService = {
       },
     });
     if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+        throw new Error("Session expirée");
+      }
       const errorData = await response.json().catch(() => ({}));
       console.error("Erreur chargement challenges par difficulté:", response.status, errorData);
       if (Object.keys(errorData).length === 0) {
@@ -109,6 +129,11 @@ export const ChallengeService = {
   getById: async (id: number): Promise<Challenge> => {
     const resp = await AuthService.apiCall(`/challenges/${id}`, { method: "GET" });
     if (!resp.ok) {
+      if (resp.status === 401) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+        throw new Error("Session expirée");
+      }
       const errorData = await resp.json().catch(() => ({}));
       console.error("Erreur chargement challenge:", resp.status, errorData);
       if (Object.keys(errorData).length === 0) {

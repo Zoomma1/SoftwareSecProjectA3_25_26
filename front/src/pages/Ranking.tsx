@@ -5,6 +5,7 @@ import ProfileModalContent from "../components/ProfileModalContent/ProfileModalC
 import "./Ranking.css";
 import { AuthService } from "../Service/AuthService";
 import { UserModel } from "../types/User";
+import { UserService } from "../Service/UserService";
 
 type RankingPlayer = {
   id: string;
@@ -41,6 +42,7 @@ export default function Ranking() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [players, setPlayers] = useState<RankingPlayer[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   // Load users from backend if available, otherwise use fallbackData
   useEffect(() => {
@@ -49,6 +51,11 @@ export default function Ranking() {
     async function load() {
       try {
         const resp = await AuthService.apiCall("/users");
+        if (resp && resp.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+          return;
+        }
         if (!resp || !resp.ok) throw new Error("no users endpoint");
         const data = await resp.json();
 
@@ -64,6 +71,14 @@ export default function Ranking() {
             score: typeof user.totalChallengePoints === "number" ? user.totalChallengePoints : 0,
           } as Omit<RankingPlayer, "rank">;
         });
+
+        try {
+          const currentUser = await UserService.loadCurrentUser();
+          const userData = (currentUser as any).data || currentUser;
+          if (userData?.id) setCurrentUserId(userData.id);
+        } catch (e) {
+          console.warn("Ranking: failed to load current user", e);
+        }
 
         if (!mounted) return;
 
@@ -108,6 +123,7 @@ export default function Ranking() {
                 solved={p.solved}
                 score={p.score}
                 onClick={openProfile}
+                isCurrentUser={p.id === currentUserId}
               />
             ))}
           </section>

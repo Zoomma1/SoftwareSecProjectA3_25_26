@@ -49,6 +49,11 @@ export default function Ranking() {
     async function load() {
       try {
         const resp = await AuthService.apiCall("/users");
+        if (resp && resp.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+          return;
+        }
         if (!resp || !resp.ok) throw new Error("no users endpoint");
         const data = await resp.json();
 

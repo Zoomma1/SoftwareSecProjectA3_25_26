@@ -17,7 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <AuthProvider>
           <Routes>
             <Route element={<Sidebar />}>
-            <Route path="/" element={<Navigate to="/challenges" replace />} />
+            <Route path="/" element={<Navigate to="/login" replace />} />
               <Route path="/challenges" element={<Challenges />} />
               <Route path="/challenges/:id" element={<ChallengeDetail />} />
               <Route path="/ranking" element={<Ranking />} />

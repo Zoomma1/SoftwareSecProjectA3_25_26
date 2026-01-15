@@ -109,6 +109,11 @@ public class ChallengeController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{challengeId}")
+    public ResponseEntity<ChallengeDto> get(@PathVariable Long challengeId) {
+        return ResponseEntity.ok(challengeService.getById(challengeId));
+    }
+
     /**
      * Soumet une réponse pour un challenge. Si correct, le challenge est compté comme complété et le user gagne des points.
      */

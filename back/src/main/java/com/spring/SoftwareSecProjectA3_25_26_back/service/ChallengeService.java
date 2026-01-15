@@ -84,6 +84,13 @@ public class ChallengeService {
     }
 
     @Transactional(readOnly = true)
+    public ChallengeDto getById(Long challengeId) {
+        return challengeRepository.findById(challengeId)
+                .map(ChallengeMapper.INSTANCE::toDto)
+                .orElseThrow(() -> new HttpBadRequestException("Challenge not found"));
+    }
+
+    @Transactional(readOnly = true)
     public List<ChallengeDto> findAllByDifficulty(Difficulty difficulty) {
         if (difficulty == null) {
             throw new HttpBadRequestException("difficulty is required");

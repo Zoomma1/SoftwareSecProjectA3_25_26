@@ -110,7 +110,7 @@ export default function ChallengesForm({ onSubmit }: ChallengeFormProps) {
         className="hidden-file-input"
       />
       <label htmlFor="fileUpload" className="file-upload-link">
-        Ajouter des fichiers
+        Ajouter des fichiers (5MB max)
       </label>
 
       {files.length > 0 && (

@@ -53,6 +53,7 @@ export default function Ranking() {
         const resp = await AuthService.apiCall("/users");
         if (resp && resp.status === 401) {
           localStorage.removeItem("token");
+          localStorage.removeItem("fullName");
           window.location.href = "/login";
           return;
         }

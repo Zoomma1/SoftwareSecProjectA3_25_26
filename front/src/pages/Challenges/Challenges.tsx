@@ -46,6 +46,17 @@ export default function Challenges() {
 
   const handleFormSubmit = async (data: ChallengeFormData) => {
     try {
+      // Security: Validate file size to prevent DoS
+      if (data.files && data.files.length > 0) {
+        const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+        for (const file of data.files) {
+          if (file.size > MAX_SIZE) {
+            alert(`Le fichier "${file.name}" est trop volumineux (max 5MB).`);
+            return;
+          }
+        }
+      }
+
       const formData = new FormData();
       formData.append("title", data.title);
       formData.append("description", data.description);

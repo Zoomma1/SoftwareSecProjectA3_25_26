@@ -44,7 +44,7 @@ services:
     volumes:
       - serv-db-data:/var/lib/postgresql/data
     ports:
-      - 5534:5532
+      - 5534:5432
     networks:
       - prod
 

@@ -54,7 +54,10 @@ const ChallengeCard = ({ id, category, points, title, difficulty, isResolved }: 
         </div>
 
         {/* Badge de statut */}
-        <span className={`status-badge ${isResolved ? 'status-resolved' : 'status-unresolved'}`}>
+        <span
+          className={`status-badge ${isResolved ? 'status-resolved' : 'status-unresolved'}`}
+          style={isResolved ? { backgroundColor: "#dcfce7", color: "#15803d" } : undefined}
+        >
           {isResolved ? 'Résolu' : 'Non résolu'}
         </span>
       </div>

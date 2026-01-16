@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import { ChallengeService, type Challenge } from "../Service/ChallengeService";
+import { UserService } from "../Service/UserService";
 import "./ChallengeDetail.css";
 
 const DIFFICULTY_MAP: Record<string, { points: number; level: number }> = {
@@ -19,6 +20,9 @@ export default function ChallengeDetail() {
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [solution, setSolution] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationResult, setValidationResult] = useState<{ success: boolean; message: string } | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -27,9 +31,25 @@ export default function ChallengeDetail() {
       setLoading(true);
       setError(null);
       try {
-        const data = await ChallengeService.getById(Number(id));
+        const [data, userModel] = await Promise.all([
+          ChallengeService.getById(Number(id)),
+          UserService.loadCurrentUser(),
+        ]);
+
         if (!mounted) return;
+
+        const userData = (userModel as any)?.data ?? userModel;
+        const completedChallenges: any[] = Array.isArray(userData?.completedChallenges) ? userData.completedChallenges : [];
+        if (completedChallenges.some((cId) => Number(cId) === Number(data.id))) {
+          data.isResolved = true;
+        }
+
         setChallenge(data);
+        if (data.isResolved && data.solution) {
+          setSolution(data.solution);
+        } else {
+          setSolution("");
+        }
       } catch (e: any) {
         if (!mounted) return;
         console.error("Failed to load challenge", e);
@@ -42,6 +62,27 @@ export default function ChallengeDetail() {
     load();
     return () => { mounted = false; };
   }, [id]);
+
+  const handleValidate = async () => {
+    if (!challenge) return;
+    setIsSubmitting(true);
+    setValidationResult(null);
+
+    try {
+      const success = await ChallengeService.validate(challenge.id, solution);
+      if (success == true) {
+        setValidationResult({ success: true, message: "Bravo ! Challenge validé avec succès." });
+        setChallenge((prev) => (prev ? { ...prev, isResolved: true } : null));
+        await UserService.loadCurrentUser();
+      } else if (success == false) {
+        setValidationResult({ success: false, message: "Mauvaise réponse. Réessayez !" });
+      }
+    } catch (err: any) {
+      setValidationResult({ success: false, message: err.message || "Erreur lors de la validation." });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const filledStars = (() => {
     if (!challenge) return 0;
@@ -70,7 +111,7 @@ export default function ChallengeDetail() {
 
               <div className="challenge-top-row">
                 <div>
-                  <h2 className="challenge-title">{challenge.title} <span className="status-badge">{challenge.isResolved ? 'Résolu' : 'Non résolu'}</span></h2>
+                  <h2 className="challenge-title">{challenge.title} <span className={`status-badge ${challenge.isResolved ? 'resolved' : ''}`}>{challenge.isResolved ? 'Résolu' : 'Non résolu'}</span></h2>
                 </div>
 
                 <div className="challenge-meta">
@@ -95,14 +136,29 @@ export default function ChallengeDetail() {
 
               <div className="challenge-desc">
                 <div dangerouslySetInnerHTML={{ __html: challenge.description || '' }} />
+
               </div>
 
               <div className="solution-area">
-                <textarea className="solution-box" placeholder="Entrez votre réponse ici..." defaultValue={challenge.solution ?? ''} />
+                <textarea
+                  className="solution-box"
+                  placeholder="Entrez votre réponse ici..."
+                  value={solution}
+                  onChange={(e) => setSolution(e.target.value)}
+                  disabled={isSubmitting || challenge.isResolved}
+                />
               </div>
 
+              {validationResult && (
+                <div style={{ marginBottom: "1rem", color: validationResult.success ? "#22c55e" : "#ef4444", fontWeight: 500 }}>
+                  {validationResult.message}
+                </div>
+              )}
+
               <div className="challenge-actions">
-                <button className="btn btn-primary">Valider</button>
+                <button className="btn btn-primary" onClick={handleValidate} disabled={isSubmitting || challenge.isResolved}>
+                  {isSubmitting ? "Validation..." : (challenge.isResolved ? "Déjà validé" : "Valider")}
+                </button>
                 <button type="button" className="btn btn-outline" onClick={() => navigate('/challenges')}>Quitter</button>
               </div>
             </>

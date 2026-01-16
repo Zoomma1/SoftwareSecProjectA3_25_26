@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
@@ -133,6 +135,27 @@ public class S3Service {
         } catch (Exception e) {
             System.err.println("Error extracting S3 key from URL: " + s3Url + " - " + e.getMessage());
             throw new RuntimeException("Invalid S3 URL format: " + s3Url, e);
+        }
+    }
+
+    /**
+     * Download a file from S3 and return an InputStream.
+     * The caller is responsible for closing the stream.
+     *
+     * @param s3Key The S3 key of the file to download
+     * @return ResponseInputStream containing the file content and metadata
+     */
+    public ResponseInputStream<GetObjectResponse> downloadFile(@NotBlank String s3Key) {
+        try {
+            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(s3Key)
+                    .build();
+
+            return s3Client.getObject(getObjectRequest);
+        } catch (Exception e) {
+            System.err.println("Error downloading file from S3: " + s3Key + " - " + e.getMessage());
+            throw new RuntimeException("Failed to download file from S3: " + s3Key, e);
         }
     }
 }

@@ -9,6 +9,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("fullName");
+    // We intentionally preserve "remember_email" so the user doesn't have to re-type it
   };
 
   return (

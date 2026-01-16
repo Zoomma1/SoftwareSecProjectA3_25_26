@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Auth.css";
 import { AuthService } from "../Service/AuthService";
+import { calculateStrength } from "../utils/passwordStrength";
+import PasswordField from "../components/PasswordField/PasswordField";
 
 type FormState = {
   lastName: string;
@@ -15,17 +17,6 @@ type FormErrors = Partial<Record<keyof FormState, string>>;
 
 function isEmailValid(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-}
-
-function calculateStrength(pwd: string): number {
-  let score = 0;
-  if (!pwd) return 0;
-  if (pwd.length >= 8) score++;
-  if (pwd.length >= 12) score++;
-  if (/[A-Z]/.test(pwd)) score++;
-  if (/[0-9]/.test(pwd)) score++;
-  if (/[^A-Za-z0-9]/.test(pwd)) score++;
-  return score;
 }
 
 export default function Register() {
@@ -43,6 +34,7 @@ export default function Register() {
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirmPwd, setShowConfirmPwd] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [generalError, setGeneralError] = useState("");
 
   const passwordRequirements = [
     { label: "8 caractères minimum", met: form.password.length >= 8 },
@@ -93,6 +85,7 @@ export default function Register() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setGeneralError("");
 
     const eMap = validate();
     if (Object.keys(eMap).length) {
@@ -125,8 +118,7 @@ export default function Register() {
       });
       navigate("/challenges");
     } catch (error: any) {
-      console.error(error);
-      alert(error.message || "Erreur lors de l'inscription");
+      setGeneralError(error.message || "Erreur lors de l'inscription");
     } finally {
       setIsSubmitting(false);
     }
@@ -153,6 +145,7 @@ export default function Register() {
           </div>
 
           <form onSubmit={onSubmit} className="authForm" noValidate>
+            {generalError && <div className="authError" style={{ marginBottom: "1rem" }}>{generalError}</div>}
             <div className="authRow2">
               <Field
                 label="Nom"
@@ -160,6 +153,7 @@ export default function Register() {
                 value={form.lastName}
                 error={errors.lastName}
                 onChange={(v) => setField("lastName", v)}
+                autoComplete="family-name"
               />
               <Field
                 label="Prénom"
@@ -167,6 +161,7 @@ export default function Register() {
                 value={form.firstName}
                 error={errors.firstName}
                 onChange={(v) => setField("firstName", v)}
+                autoComplete="given-name"
               />
             </div>
 
@@ -177,6 +172,7 @@ export default function Register() {
               value={form.email}
               error={errors.email}
               onChange={(v) => setField("email", v)}
+              autoComplete="email"
             />
 
             <PasswordField
@@ -236,8 +232,9 @@ function Field(props: {
   error?: string;
   type?: string;
   onChange: (value: string) => void;
+  autoComplete?: string;
 }) {
-  const { label, placeholder, value, error, type = "text", onChange } = props;
+  const { label, placeholder, value, error, type = "text", onChange, autoComplete } = props;
 
   return (
     <div className="authField">
@@ -248,66 +245,8 @@ function Field(props: {
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         className="authInput"
+        autoComplete={autoComplete}
       />
-      {error ? <div className="authError">{error}</div> : null}
-    </div>
-  );
-}
-
-function PasswordField(props: {
-  label: string;
-  value: string;
-  error?: string;
-  show: boolean;
-  onToggle: () => void;
-  onChange: (value: string) => void;
-  strength?: number;
-}) {
-  const { label, value, error, show, onToggle, onChange, strength } = props;
-
-  // Determine color based on strength (0-5)
-  const getStrengthColor = (s: number) => {
-    if (s <= 2) return "#ef4444"; // Red
-    if (s === 3) return "#eab308"; // Yellow
-    return "#22c55e"; // Green
-  };
-
-  const strengthPercent = Math.min(100, Math.max(0, ((strength || 0) / 5) * 100));
-
-  return (
-    <div className="authField">
-      <label className="authLabel">{label}</label>
-      <div className="authPasswordWrap">
-        <input
-          type={show ? "text" : "password"}
-          value={value}
-          placeholder="••••••••••"
-          onChange={(e) => onChange(e.target.value)}
-          className="authInput authInputPassword"
-        />
-
-        <button type="button" onClick={onToggle} className="authEyeBtn" aria-label="toggle password">
-          <img
-            src={show ? "/icons/eye-off.svg" : "/icons/eye.svg"}
-            alt={show ? "Masquer le mot de passe" : "Afficher le mot de passe"}
-            className="authEyeIcon"
-          />
-        </button>
-      </div>
-
-      {strength !== undefined && value.length > 0 && (
-        <div style={{ marginTop: "8px", height: "4px", width: "100%", background: "#e2e8f0", borderRadius: "2px", overflow: "hidden" }}>
-          <div
-            style={{
-              height: "100%",
-              width: `${strengthPercent}%`,
-              background: getStrengthColor(strength || 0),
-              transition: "width 0.3s ease, background-color 0.3s ease"
-            }}
-          />
-        </div>
-      )}
-
       {error ? <div className="authError">{error}</div> : null}
     </div>
   );

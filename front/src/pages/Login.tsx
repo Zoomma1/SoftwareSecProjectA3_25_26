@@ -4,24 +4,72 @@ import "./Auth.css";
 import Input from "../components/Input/Input";
 import { AuthService } from "../Service/AuthService";
 
+const LOCKOUT_DURATION = 60;
+
 export default function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => localStorage.getItem("remember_email") || "");
   const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(false);
+  const [remember, setRemember] = useState(() => !!localStorage.getItem("remember_email"));
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [lockoutTimer, setLockoutTimer] = useState(() => {
+    const lockoutUntil = localStorage.getItem("auth_lockout_until");
+    if (lockoutUntil) {
+      const remaining = Math.ceil((parseInt(lockoutUntil, 10) - Date.now()) / 1000);
+      return remaining > 0 ? remaining : 0;
+    }
+    return 0;
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const lockoutUntil = localStorage.getItem("auth_lockout_until");
+      if (lockoutUntil) {
+        const remaining = Math.ceil((parseInt(lockoutUntil, 10) - Date.now()) / 1000);
+        setLockoutTimer(remaining > 0 ? remaining : 0);
+        if (remaining <= 0) {
+          localStorage.removeItem("auth_lockout_until");
+          localStorage.removeItem("auth_attempts");
+        }
+      } else {
+        setLockoutTimer(0);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (lockoutTimer > 0) return;
+
     setIsSubmitting(true);
     try {
       await AuthService.login({ email, password });
+
+      if (remember) {
+        localStorage.setItem("remember_email", email);
+      } else {
+        localStorage.removeItem("remember_email");
+      }
+
+      localStorage.removeItem("auth_attempts");
+      localStorage.removeItem("auth_lockout_until");
       navigate("/challenges");
     } catch (err: any) {
-      setError(err.message || "Erreur lors de la connexion");
+      const attempts = parseInt(localStorage.getItem("auth_attempts") || "0", 10) + 1;
+      localStorage.setItem("auth_attempts", attempts.toString());
+      if (attempts >= 5) {
+        localStorage.setItem("auth_lockout_until", (Date.now() + LOCKOUT_DURATION * 1000).toString());
+        setLockoutTimer(LOCKOUT_DURATION);
+        setError("Trop de tentatives. Compte bloqué pour 1 minute.");
+      } else {
+        const remaining = 5 - attempts;
+        setError(`${err.message || "Erreur lors de la connexion"} (${remaining} tentative${remaining > 1 ? "s" : ""} restante${remaining > 1 ? "s" : ""})`);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -38,7 +86,6 @@ export default function Login() {
           <p className="authSubtitle">Prêt à faire des challenges ?</p>
 
           <form className="authForm" onSubmit={onSubmit}>
-            {error && <div className="authError" style={{ marginBottom: "1rem" }}>{error}</div>}
             <label className="authLabel">
               Email
               <Input
@@ -92,8 +139,30 @@ export default function Login() {
               </label>
             </div>
 
-            <button className="authPrimaryBtn" type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Connexion..." : "Se connecter"}
+            {error && <div className="authError" style={{ marginBottom: "1rem" }}>{error}</div>}
+
+            <button
+              className="authPrimaryBtn"
+              type="submit"
+              disabled={isSubmitting || lockoutTimer > 0}
+              style={{ opacity: isSubmitting || lockoutTimer > 0 ? 0.7 : 1, position: "relative", overflow: "hidden" }}
+            >
+              {lockoutTimer > 0 && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    height: "100%",
+                    width: `${(lockoutTimer / LOCKOUT_DURATION) * 100}%`,
+                    backgroundColor: "rgba(0, 0, 0, 0.2)",
+                    transition: "width 1s linear",
+                  }}
+                />
+              )}
+              <span style={{ position: "relative", zIndex: 1 }}>
+                {lockoutTimer > 0 ? `Réessayer dans ${lockoutTimer}s` : (isSubmitting ? "Connexion..." : "Se connecter")}
+              </span>
             </button>
 
             <p className="authBottomText">

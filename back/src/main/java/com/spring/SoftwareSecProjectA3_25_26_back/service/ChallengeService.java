@@ -6,6 +6,7 @@ import com.spring.SoftwareSecProjectA3_25_26_back.dal.model.postgres.User;
 import com.spring.SoftwareSecProjectA3_25_26_back.dal.postgres.repository.ChallengeRepository;
 import com.spring.SoftwareSecProjectA3_25_26_back.dal.postgres.repository.UserRepository;
 import com.spring.SoftwareSecProjectA3_25_26_back.dto.ChallengeDto;
+import com.spring.SoftwareSecProjectA3_25_26_back.dto.FileDownloadDto;
 import com.spring.SoftwareSecProjectA3_25_26_back.dto.request.ChallengeUploadRequestDto;
 import com.spring.SoftwareSecProjectA3_25_26_back.exceptions.http.HttpBadRequestException;
 import com.spring.SoftwareSecProjectA3_25_26_back.exceptions.http.HttpUnauthorizedException;
@@ -13,6 +14,8 @@ import com.spring.SoftwareSecProjectA3_25_26_back.mapper.ChallengeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 
 import java.util.Collections;
 import java.util.List;
@@ -383,6 +386,55 @@ public class ChallengeService {
         } catch (Exception e) {
             System.err.println("Error generating download URL: " + e.getMessage());
             throw new RuntimeException("Failed to generate download URL", e);
+        }
+    }
+
+    /**
+     * Download a challenge's file directly from S3 and return as a stream.
+     * Verifies that the user is authenticated.
+     * Returns the file content with metadata for streaming to the client.
+     */
+    @Transactional(readOnly = true)
+    public FileDownloadDto downloadChallengeFile(Long challengeId) {
+        // Verify user is authenticated
+        Long loggedId = securityService.getLoggedId();
+        if (loggedId == null) {
+            throw new HttpUnauthorizedException("Authentication required");
+        }
+
+        // Verify challenge exists
+        Challenge challenge = challengeRepository.findById(challengeId)
+                .orElseThrow(() -> new HttpBadRequestException("Challenge not found"));
+
+        // Verify attachment URL exists and is valid
+        String attachmentUrl = challenge.getAttachmentUrl();
+        if (attachmentUrl == null || attachmentUrl.isBlank()) {
+            throw new HttpBadRequestException("No files attached to this challenge");
+        }
+
+        // Validate that the URL is a proper S3 URL (not just placeholder text)
+        if (!attachmentUrl.contains("s3") && !attachmentUrl.contains("amazonaws")) {
+            System.err.println("Invalid attachment URL format detected: " + attachmentUrl);
+            throw new HttpBadRequestException("Invalid file attachment: the URL is not a valid S3 link");
+        }
+
+        // Extract S3 key and download file
+        try {
+            String s3Key = s3Service.extractKeyFromUrl(attachmentUrl);
+            ResponseInputStream<GetObjectResponse> s3Object = s3Service.downloadFile(s3Key);
+
+            // Extract metadata
+            GetObjectResponse response = s3Object.response();
+            String contentType = response.contentType();
+            Long contentLength = response.contentLength();
+
+            // Extract filename from S3 key (last part after /)
+            String fileName = s3Key.substring(s3Key.lastIndexOf('/') + 1);
+
+            return new FileDownloadDto(s3Object, contentType, fileName, contentLength);
+        } catch (Exception e) {
+            System.err.println("Error downloading file: " + e.getMessage());
+            throw new RuntimeException("Failed to download file", e);
         }
     }
 

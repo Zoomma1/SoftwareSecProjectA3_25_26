@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { AuthService } from "../../Service/AuthService";
+import { ChallengeService, type Challenge } from "../../Service/ChallengeService";
 import ScoreRow from "../ScoreRow/ScoreRow";
 import ChallengeCard from "../ChallengeCard/ChallengeCard";
 import "../../pages/Profile.css";
@@ -17,22 +18,38 @@ type ApiUser = {
   totalChallengePoints?: number;
 };
 
+const DIFFICULTY_MAP: Record<string, { points: number; level: number }> = {
+  VERY_EASY: { points: 20, level: 1 },
+  EASY: { points: 40, level: 2 },
+  MEDIUM: { points: 60, level: 3 },
+  HARD: { points: 80, level: 4 },
+  VERY_HARD: { points: 100, level: 5 },
+};
+
 export default function ProfileModalContent({ userId }: Props) {
   const [user, setUser] = useState<ApiUser | null>(null);
+  const [challengesList, setChallengesList] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const resp = await AuthService.apiCall(`/users/${userId}`);
+        const [resp, challengesData] = await Promise.all([
+          AuthService.apiCall(`/users/${userId}`),
+          ChallengeService.getLatest(),
+        ]);
+
         if (!resp || !resp.ok) {
           setUser(null);
-          return;
+        } else {
+          const data = await resp.json();
+          if (mounted) setUser(data);
         }
-        const data = await resp.json();
-        if (!mounted) return;
-        setUser(data);
+
+        if (mounted && Array.isArray(challengesData)) {
+          setChallengesList(challengesData);
+        }
       } catch (e) {
         console.warn("ProfileModalContent: failed to load user", e);
         if (mounted) setUser(null);
@@ -56,14 +73,13 @@ export default function ProfileModalContent({ userId }: Props) {
     );
   }
 
-  const challenges = (user?.completedChallenges ?? []).map((c: any, i: number) => ({
-    id: c.id ?? i,
-    category: c.category ?? "",
-    points: c.points ?? (c.value ?? 0),
-    title: c.title ?? c.name ?? "Challenge",
-    difficulty: c.difficulty ?? 1,
-    isResolved: true,
-  }));
+  const completedIds = user?.completedChallenges || [];
+  const resolvedChallenges = challengesList.filter((c) =>
+    completedIds.some((id: any) => {
+      const compId = typeof id === "object" ? id.id : id;
+      return Number(compId) === Number(c.id);
+    })
+  );
 
   return (
     <div className="profileModalContent">
@@ -86,8 +102,15 @@ export default function ProfileModalContent({ userId }: Props) {
           <div className="profileChallengesGrid">
             {loading ? (
               <div>Chargement...</div>
-            ) : challenges.length > 0 ? (
-              challenges.map((c) => <ChallengeCard key={c.id} {...c} />)
+            ) : resolvedChallenges.length > 0 ? (
+              resolvedChallenges.map((c) => <ChallengeCard                 
+                key={c.id}
+                id={c.id}
+                category={c.category}
+                points={DIFFICULTY_MAP[c.difficulty]?.points || 0}
+                title={c.title}
+                difficulty={DIFFICULTY_MAP[c.difficulty]?.level || 0}
+                isResolved={true} />)
             ) : (
               <div>Aucun challenge disponible</div>
             )}

@@ -160,7 +160,7 @@ export default function ChallengeDetail() {
                 <button className="btn btn-primary" onClick={handleValidate} disabled={isSubmitting || challenge.isResolved}>
                   {isSubmitting ? "Validation..." : (challenge.isResolved ? "Déjà validé" : "Valider")}
                 </button>
-                <button type="button" className="btn btn-outline" onClick={() => navigate('/challenges')}>Quitter</button>
+                <button type="button" className="btn btn-outline" onClick={() => navigate(-1)}>Quitter</button>
               </div>
             </>
           )}

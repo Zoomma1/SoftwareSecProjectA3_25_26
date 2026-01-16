@@ -136,4 +136,15 @@ public class ChallengeController {
     ) {
         return ResponseEntity.ok(challengeService.submitAnswerAndComplete(challengeId, body.getAnswer()));
     }
+
+    /**
+     * Génère une URL pré-signée S3 pour télécharger les fichiers d'un challenge.
+     * L'URL est valide pendant 15 minutes.
+     * Vérification de l'authentification utilisateur requise.
+     */
+    @GetMapping("/{challengeId}/download")
+    public ResponseEntity<String> download(@PathVariable Long challengeId) {
+        String presignedUrl = challengeService.downloadChallenge(challengeId);
+        return ResponseEntity.ok(presignedUrl);
+    }
 }

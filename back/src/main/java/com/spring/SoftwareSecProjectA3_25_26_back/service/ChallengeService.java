@@ -33,6 +33,9 @@ public class ChallengeService {
     @Autowired
     private FileUploadService fileUploadService;
 
+    @Autowired
+    private S3Service s3Service;
+
     /**
      * Retourne les derniers challenges (tous users confondus).
      */
@@ -341,6 +344,45 @@ public class ChallengeService {
         // either zipFile or multipleFiles should be provided
         if (dto.getMultipleFiles() == null || dto.getMultipleFiles().isEmpty()) {
             throw new HttpBadRequestException("Either zipFile or multipleFiles must be provided");
+        }
+    }
+
+    /**
+     * Generate a presigned download URL for a challenge's files.
+     * Verifies that the user is authenticated.
+     * Returns a time-limited URL (15 minutes) that can be used to download the file directly from S3.
+     */
+    @Transactional(readOnly = true)
+    public String downloadChallenge(Long challengeId) {
+        // Verify user is authenticated
+        Long loggedId = securityService.getLoggedId();
+        if (loggedId == null) {
+            throw new HttpUnauthorizedException("Authentication required");
+        }
+
+        // Verify challenge exists
+        Challenge challenge = challengeRepository.findById(challengeId)
+                .orElseThrow(() -> new HttpBadRequestException("Challenge not found"));
+
+        // Verify attachment URL exists and is valid
+        String attachmentUrl = challenge.getAttachmentUrl();
+        if (attachmentUrl == null || attachmentUrl.isBlank()) {
+            throw new HttpBadRequestException("No files attached to this challenge");
+        }
+
+        // Validate that the URL is a proper S3 URL (not just placeholder text)
+        if (!attachmentUrl.contains("s3") && !attachmentUrl.contains("amazonaws")) {
+            System.err.println("Invalid attachment URL format detected: " + attachmentUrl);
+            throw new HttpBadRequestException("Invalid file attachment: the URL is not a valid S3 link");
+        }
+
+        // Extract S3 key and generate presigned URL
+        try {
+            String s3Key = s3Service.extractKeyFromUrl(attachmentUrl);
+            return s3Service.generatePresignedDownloadUrl(s3Key);
+        } catch (Exception e) {
+            System.err.println("Error generating download URL: " + e.getMessage());
+            throw new RuntimeException("Failed to generate download URL", e);
         }
     }
 

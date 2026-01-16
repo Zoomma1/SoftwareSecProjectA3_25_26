@@ -71,6 +71,7 @@ export default function ChallengeDetail() {
     try {
       const success = await ChallengeService.validate(challenge.id, solution);
       if (success == true) {
+        fireConfetti();
         setValidationResult({ success: true, message: "Bravo ! Challenge validé avec succès." });
         setChallenge((prev) => (prev ? { ...prev, isResolved: true } : null));
         await UserService.loadCurrentUser();
@@ -168,4 +169,81 @@ export default function ChallengeDetail() {
       </main>
     </div>
   );
+}
+
+function fireConfetti() {
+  const canvas = document.createElement("canvas");
+  canvas.style.position = "fixed";
+  canvas.style.top = "0";
+  canvas.style.left = "0";
+  canvas.style.width = "100%";
+  canvas.style.height = "100%";
+  canvas.style.pointerEvents = "none";
+  canvas.style.zIndex = "9999";
+  document.body.appendChild(canvas);
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const resize = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  };
+  window.addEventListener("resize", resize);
+  resize();
+
+  const particles: { x: number; y: number; vx: number; vy: number; color: string; size: number; rotation: number; vRotation: number; opacity: number }[] = [];
+  const colors = ["#22c55e", "#3b82f6", "#f59e0b", "#ef4444", "#a855f7", "#ec4899"];
+
+  // Create particles
+  for (let i = 0; i < 150; i++) {
+    particles.push({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+      vx: (Math.random() - 0.5) * 20,
+      vy: (Math.random() - 0.5) * 20 - 5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: Math.random() * 8 + 4,
+      rotation: Math.random() * 360,
+      vRotation: (Math.random() - 0.5) * 10,
+      opacity: 1,
+    });
+  }
+
+  const animate = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let active = false;
+
+    particles.forEach((p) => {
+      if (p.opacity > 0) {
+        active = true;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.3; // Gravity
+        p.vx *= 0.96; // Air resistance
+        p.vy *= 0.96;
+        p.rotation += p.vRotation;
+        p.opacity -= 0.008;
+
+        ctx.save();
+        ctx.globalAlpha = p.opacity;
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        ctx.restore();
+      }
+    });
+
+    if (active) {
+      requestAnimationFrame(animate);
+    } else {
+      window.removeEventListener("resize", resize);
+      if (document.body.contains(canvas)) {
+        document.body.removeChild(canvas);
+      }
+    }
+  };
+
+  animate();
 }

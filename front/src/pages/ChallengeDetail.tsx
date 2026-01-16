@@ -86,6 +86,16 @@ export default function ChallengeDetail() {
     }
   };
 
+  const handleDownload = async () => {
+    if (!challenge?.id) return;
+    try {
+      const filename = decodeURIComponent(challenge.attachmentUrl?.split('/').pop() || "fichier");
+      await ChallengeService.downloadFile(challenge.id, filename);
+    } catch (e: any) {
+      setError(e.message || "Erreur lors du téléchargement");
+    }
+  };
+
   const filledStars = (() => {
     if (!challenge) return 0;
     const level = DIFFICULTY_MAP[challenge.difficulty]?.level ?? 0;
@@ -138,7 +148,17 @@ export default function ChallengeDetail() {
 
               <div className="challenge-desc">
                 <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(challenge.description || '') }} />
-
+                  {challenge.attachmentUrl && (
+                  <button style={{ marginTop: "1.5rem" }} onClick={handleDownload}>
+                    <div style={{ padding: "16px", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                      <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Fichier joint</h4>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <span style={{ fontSize: "20px" }}>📦</span>
+                        <span style={{ fontWeight: 500, color: "#0f172a" }}>{decodeURIComponent(challenge.attachmentUrl.split('/').pop() || "fichier")}</span>
+                      </div>
+                    </div>
+                  </button>
+                )}
               </div>
 
               <div className="solution-area">

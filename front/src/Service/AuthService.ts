@@ -26,7 +26,7 @@ export const AuthService = {
       const errorData = await response.json().catch(() => ({}));
       console.error("Erreur inscription:", response.status, errorData);
       if (Object.keys(errorData).length === 0) {
-        throw new Error(`Erreur serveur (${response.status}). Vérifiez que le backend est lancé.`);
+        throw new Error(`Erreur serveur (${response.status}).`);
       }
       throw new Error(errorData.message || "Une erreur est survenue lors de l'inscription");
     }

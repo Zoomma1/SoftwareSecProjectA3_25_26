@@ -167,4 +167,33 @@ export const ChallengeService = {
 
     return data;
   },
+
+  // Download challenge attachment file
+  downloadFile: async (id: number, filename: string): Promise<void> => {
+    const token = localStorage.getItem("token");
+    const resp = await fetch(`${API_URL}/challenges/${id}/download`, {
+      method: "GET",
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+    if (!resp.ok) {
+      const errorData = await resp.json().catch(() => ({}));
+      console.error("Erreur téléchargement fichier challenge:", resp.status);
+      if (Object.keys(errorData).length === 0) {
+        throw new Error(`Erreur serveur (${resp.status}). Vérifiez que le backend est lancé.`);
+      }
+      throw new Error(errorData.message || "Une erreur est survenue lors du téléchargement du fichier du challenge");
+    }
+    
+    const blob = await resp.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  },
 };

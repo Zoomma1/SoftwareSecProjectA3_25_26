@@ -8,6 +8,7 @@ interface ChallengeCardProps {
   title: string;
   difficulty: number;
   isResolved: boolean;
+  hideStatus?: boolean;
 }
 
 const CATEGORY_IMAGES: Record<string, string> = {
@@ -17,7 +18,7 @@ const CATEGORY_IMAGES: Record<string, string> = {
   Other: '/icons/Icon other.svg',
 };
 
-const ChallengeCard = ({ id, category, points, title, difficulty, isResolved }: ChallengeCardProps) => {
+const ChallengeCard = ({ id, category, points, title, difficulty, isResolved, hideStatus }: ChallengeCardProps) => {
   const bgImage = CATEGORY_IMAGES[category] || CATEGORY_IMAGES['Other'];
 
   const to = id ? `/challenges/${id}` : "/challenges";
@@ -34,10 +35,9 @@ const ChallengeCard = ({ id, category, points, title, difficulty, isResolved }: 
       {/* Titre */}
       <h3 className="card-title">{title}</h3>
 
-      {/* Footer avec Étoiles et Statut */}
       <div className="card-footer">
         {/* Étoiles simplifiées en SVG natifs */}
-        <div style={{ display: 'flex', gap: '2px' }}>
+        <div style={{ display: 'flex', gap: '2px', width: hideStatus ? '100%' : 'auto', justifyContent: hideStatus ? 'center' : 'flex-start' }}>
           {[1, 2, 3, 4, 5].map((star) => (
             <svg
               key={star}
@@ -54,12 +54,12 @@ const ChallengeCard = ({ id, category, points, title, difficulty, isResolved }: 
         </div>
 
         {/* Badge de statut */}
-        <span
+        {!hideStatus && <span
           className={`status-badge ${isResolved ? 'status-resolved' : 'status-unresolved'}`}
           style={isResolved ? { backgroundColor: "#dcfce7", color: "#15803d" } : undefined}
         >
           {isResolved ? 'Résolu' : 'Non résolu'}
-        </span>
+        </span>}
       </div>
     </div>
     </Link>

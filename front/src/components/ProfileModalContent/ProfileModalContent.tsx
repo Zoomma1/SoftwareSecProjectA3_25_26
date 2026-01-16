@@ -110,7 +110,8 @@ export default function ProfileModalContent({ userId }: Props) {
                 points={DIFFICULTY_MAP[c.difficulty]?.points || 0}
                 title={c.title}
                 difficulty={DIFFICULTY_MAP[c.difficulty]?.level || 0}
-                isResolved={true} />)
+                isResolved={true}
+                hideStatus />)
             ) : (
               <div>Aucun challenge disponible</div>
             )}

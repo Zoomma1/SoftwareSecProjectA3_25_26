@@ -31,22 +31,14 @@ export default function Profile() {
   
 
   useEffect(() => {
-      ChallengeService.getLatest()
-        .then((data) => {
-          if (Array.isArray(data)) {
-            setChallenges(data);
-          }
-        })
-        .catch((err) => console.error("Erreur chargement challenges:", err));
-    }, []);
-  
-
-  useEffect(() => {
   let mounted = true;
 
   (async () => {
     try {
-      const model = await UserService.loadCurrentUser();
+      const [model, challengesData] = await Promise.all([
+        UserService.loadCurrentUser(),
+        ChallengeService.getLatest(),
+      ]);
       if (!mounted) return;
 
       const data: any = (model as any)?.data ?? model;
@@ -56,7 +48,8 @@ export default function Profile() {
       }
 
       const email = data.email || "";
-      const solved = data.completedChallenges?.length ?? 0;
+      const completedChallengesRaw = Array.isArray(data.completedChallenges) ? data.completedChallenges : [];
+      const solved = completedChallengesRaw.length ?? 0;
       const score = data.totalChallengePoints ?? 0;
 
       const apiUsername = (data.username ?? data.userName ?? "").trim();
@@ -68,6 +61,14 @@ export default function Profile() {
         solved,
         score,
       });
+
+      if (Array.isArray(challengesData)) {
+        const mapped = challengesData.map((c) => ({
+          ...c,
+          isResolved: completedChallengesRaw.some((id: any) => Number(id) === Number(c.id)),
+        }));
+        setChallenges(mapped);
+      }
     } catch (e) {
       console.warn("Profile: failed to load current user", e);
       if (mounted) setLoadError("Impossible de charger l’utilisateur");

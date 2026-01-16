@@ -145,4 +145,26 @@ export const ChallengeService = {
     return resp.json();
   },
 
+  // Validate a challenge solution
+  validate: async (id: number, solution: string): Promise<boolean> => {
+    const token = localStorage.getItem("token");
+    const resp = await fetch(`${API_URL}/challenges/${id}/submit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: solution ? JSON.stringify({ answer: solution }) : JSON.stringify({ answer: "" }),
+    });
+
+    if (!resp.ok) {
+
+      const errorData = await resp.json().catch(() => ({}));
+      throw new Error(errorData.message || "Erreur lors de la validation");
+    }
+
+    const data = await resp.json();
+
+    return data;
+  },
 };

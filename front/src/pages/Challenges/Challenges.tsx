@@ -5,6 +5,7 @@ import Modal from "../../components/Modal/Modal";
 import ChallengesForm, { type ChallengeFormData } from "./ChallengeForm/ChallengeForm";
 import CustomSelect from "../../components/CustomSelect/CustomSelect.tsx";
 import { ChallengeService, type Challenge } from "../../Service/ChallengeService";
+import { UserService } from "../../Service/UserService";
 import './Challenges.css';
 
 const DIFFICULTY_MAP: Record<string, { points: number; level: number }> = {
@@ -100,6 +101,19 @@ export default function Challenges() {
           data = await ChallengeService.getByDifficulty(selectedDifficulty);
         } else {
           data = await ChallengeService.getLatest();
+        }
+
+        try {
+          const userModel = await UserService.loadCurrentUser();
+          const userData = (userModel as any)?.data ?? userModel;
+          const completedChallenges: any[] = Array.isArray(userData?.completedChallenges) ? userData.completedChallenges : [];
+
+          data = data.map((c) => ({
+            ...c,
+            isResolved: completedChallenges.some((id) => Number(id) === Number(c.id)),
+          }));
+        } catch (e) {
+          console.warn("Failed to load user data for challenges", e);
         }
 
         if (Array.isArray(data)) {

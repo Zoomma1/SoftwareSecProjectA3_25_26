@@ -89,8 +89,8 @@ public class ChallengeController {
     }
 
     @GetMapping("/listFromIds")
-    public ResponseEntity<List<ChallengeDto>> listFromIds(@RequestParam List<Long> ChallengesIds) {
-        return ResponseEntity.ok(challengeService.getChallengesByIds(userId));
+    public ResponseEntity<List<ChallengeDto>> listFromIds(@RequestParam List<Long> challengesIds) {
+        return ResponseEntity.ok(challengeService.getChallengesByIds(challengesIds));
     }
 
 

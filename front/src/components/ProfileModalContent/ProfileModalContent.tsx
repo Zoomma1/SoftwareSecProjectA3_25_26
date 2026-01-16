@@ -79,7 +79,11 @@ export default function ProfileModalContent({ userId }: Props) {
       const compId = typeof id === "object" ? id.id : id;
       return Number(compId) === Number(c.id);
     })
-  );
+  ).sort((a, b) => {
+    const levelA = DIFFICULTY_MAP[a.difficulty]?.level || 0;
+    const levelB = DIFFICULTY_MAP[b.difficulty]?.level || 0;
+    return levelA - levelB;
+  });
 
   return (
     <div className="profileModalContent">

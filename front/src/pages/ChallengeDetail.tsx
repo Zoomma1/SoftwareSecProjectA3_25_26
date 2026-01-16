@@ -89,7 +89,7 @@ export default function ChallengeDetail() {
   const handleDownload = async () => {
     if (!challenge?.id) return;
     try {
-      const filename = decodeURIComponent(challenge.attachmentUrl?.split('/').pop() || "fichier");
+      const filename = `${challenge.title}_Challenge.zip`;
       await ChallengeService.downloadFile(challenge.id, filename);
     } catch (e: any) {
       setError(e.message || "Erreur lors du téléchargement");
@@ -153,7 +153,7 @@ export default function ChallengeDetail() {
                     <div className="attachment-icon">📦</div>
                     <div className="attachment-info">
                       <span className="attachment-label">Fichier joint</span>
-                      <span className="attachment-name">{decodeURIComponent(challenge.attachmentUrl.split('/').pop() || "fichier")}</span>
+                      <span className="attachment-name">{challenge.title}_Challenge.zip</span>
                     </div>
                     <div className="attachment-action">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

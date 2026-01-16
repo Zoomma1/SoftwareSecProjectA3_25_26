@@ -171,7 +171,7 @@ export const ChallengeService = {
   // Download challenge attachment file
   downloadFile: async (id: number, filename: string): Promise<void> => {
     const token = localStorage.getItem("token");
-    const resp = await fetch(`${API_URL}/challenges/${id}/download`, {
+    const resp = await fetch(`${API_URL}/challenges/${id}/download-file`, {
       method: "GET",
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),

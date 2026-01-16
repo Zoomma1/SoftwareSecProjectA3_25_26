@@ -102,10 +102,10 @@
 .solution-box {
   width: 100%;
   box-sizing: border-box;
-  min-height: 200px;
+  min-height: 60px;
   border-radius: 12px;
   border: none;
-  padding: 22px;
+  padding: 16px;
   background: #e9e7ff;
   resize: vertical;
   font-size: 14px;
@@ -151,5 +151,87 @@
 
 @media (max-width: 900px) {
   .challenge-card { padding: 18px; }
-  .solution-box { min-height: 120px; }
+  .solution-box { min-height: 60px; }
+}
+
+/* Download Button Styles */
+.download-attachment-btn {
+  margin-top: 24px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.download-attachment-btn:hover {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.download-attachment-btn:active {
+  transform: translateY(0);
+}
+
+.attachment-icon {
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.attachment-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.attachment-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.attachment-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.attachment-action {
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef2ff;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.download-attachment-btn:hover .attachment-action {
+  background: #4f46e5;
+  color: #fff;
 }

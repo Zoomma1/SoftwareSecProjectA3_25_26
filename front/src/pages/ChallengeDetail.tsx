@@ -86,6 +86,16 @@ export default function ChallengeDetail() {
     }
   };
 
+  const handleDownload = async () => {
+    if (!challenge?.id) return;
+    try {
+      const filename = `${challenge.title}_Challenge.zip`;
+      await ChallengeService.downloadFile(challenge.id, filename);
+    } catch (e: any) {
+      setError(e.message || "Erreur lors du téléchargement");
+    }
+  };
+
   const filledStars = (() => {
     if (!challenge) return 0;
     const level = DIFFICULTY_MAP[challenge.difficulty]?.level ?? 0;
@@ -138,7 +148,22 @@ export default function ChallengeDetail() {
 
               <div className="challenge-desc">
                 <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(challenge.description || '') }} />
-
+                  {challenge.attachmentUrl && (
+                  <button className="download-attachment-btn" onClick={handleDownload}>
+                    <div className="attachment-icon">📦</div>
+                    <div className="attachment-info">
+                      <span className="attachment-label">Fichier joint</span>
+                      <span className="attachment-name">{challenge.title}_Challenge.zip</span>
+                    </div>
+                    <div className="attachment-action">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
+                    </div>
+                  </button>
+                )}
               </div>
 
               <div className="solution-area">

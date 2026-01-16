@@ -9,11 +9,12 @@ type ScoreRowProps = {
   score: number;
   compact?: boolean;
   onClick?: (id?: string) => void;
+  isCurrentUser?: boolean;
 };
 
-export default function ScoreRow({ id, rank, fullName, solved, score, compact, onClick }: ScoreRowProps) {
+export default function ScoreRow({ id, rank, fullName, solved, score, compact, onClick, isCurrentUser }: ScoreRowProps) {
   const content = (
-    <div className={`score-row ${compact ? 'score-row--compact' : ''}`}>
+    <div className={`score-row ${compact ? 'score-row--compact' : ''} ${isCurrentUser ? 'score-row--current' : ''}`}>
       <div className="score-row-left">
         {rank <= 3 ? (
           <div className="rankBadgeWrapper">
@@ -27,7 +28,10 @@ export default function ScoreRow({ id, rank, fullName, solved, score, compact, o
         ) : (
           <span className="rankNumber">{rank}</span>
         )}
-        <span className="playerName">{fullName}</span>
+        <span className="playerName">
+          {fullName}
+          {isCurrentUser && " (Moi)"}
+        </span>
       </div>
 
       <div className="score-row-mid">

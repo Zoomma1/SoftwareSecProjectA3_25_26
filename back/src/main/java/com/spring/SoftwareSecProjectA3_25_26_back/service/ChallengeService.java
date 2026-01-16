@@ -56,6 +56,16 @@ public class ChallengeService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<ChallengeDto> getChallengesByIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return challengeRepository.findChallengesByIdIn(ids).stream()
+                .map(ChallengeMapper.INSTANCE::toDto)
+                .toList();
+    }
+
     /**
      * Liste les challenges d'un user.
      */
@@ -81,6 +91,13 @@ public class ChallengeService {
                 .stream()
                 .map(ChallengeMapper.INSTANCE::toDto)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public ChallengeDto getById(Long challengeId) {
+        return challengeRepository.findById(challengeId)
+                .map(ChallengeMapper.INSTANCE::toDto)
+                .orElseThrow(() -> new HttpBadRequestException("Challenge not found"));
     }
 
     @Transactional(readOnly = true)

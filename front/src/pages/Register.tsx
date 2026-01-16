@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Auth.css";
 import { AuthService } from "../Service/AuthService";
@@ -91,7 +91,7 @@ export default function Register() {
     return e;
   }
 
-  async function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
 
     const eMap = validate();

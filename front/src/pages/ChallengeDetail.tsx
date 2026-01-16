@@ -149,13 +149,18 @@ export default function ChallengeDetail() {
               <div className="challenge-desc">
                 <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(challenge.description || '') }} />
                   {challenge.attachmentUrl && (
-                  <button style={{ marginTop: "1.5rem" }} onClick={handleDownload}>
-                    <div style={{ padding: "16px", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-                      <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Fichier joint</h4>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <span style={{ fontSize: "20px" }}>📦</span>
-                        <span style={{ fontWeight: 500, color: "#0f172a" }}>{decodeURIComponent(challenge.attachmentUrl.split('/').pop() || "fichier")}</span>
-                      </div>
+                  <button className="download-attachment-btn" onClick={handleDownload}>
+                    <div className="attachment-icon">📦</div>
+                    <div className="attachment-info">
+                      <span className="attachment-label">Fichier joint</span>
+                      <span className="attachment-name">{decodeURIComponent(challenge.attachmentUrl.split('/').pop() || "fichier")}</span>
+                    </div>
+                    <div className="attachment-action">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
                     </div>
                   </button>
                 )}

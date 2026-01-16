@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Auth.css";
 import Input from "../components/Input/Input";
@@ -40,7 +40,7 @@ export default function Login() {
     return () => clearInterval(interval);
   }, []);
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import './ScoreRow.css';
 
@@ -9,11 +8,13 @@ type ScoreRowProps = {
   solved: number;
   score: number;
   compact?: boolean;
+  onClick?: (id?: string) => void;
+  isCurrentUser?: boolean;
 };
 
-export default function ScoreRow({ id, rank, fullName, solved, score, compact }: ScoreRowProps) {
+export default function ScoreRow({ id, rank, fullName, solved, score, compact, onClick, isCurrentUser }: ScoreRowProps) {
   const content = (
-    <div className={`score-row ${compact ? 'score-row--compact' : ''}`}>
+    <div className={`score-row ${compact ? 'score-row--compact' : ''} ${isCurrentUser ? 'score-row--current' : ''}`}>
       <div className="score-row-left">
         {rank <= 3 ? (
           <div className="rankBadgeWrapper">
@@ -27,7 +28,10 @@ export default function ScoreRow({ id, rank, fullName, solved, score, compact }:
         ) : (
           <span className="rankNumber">{rank}</span>
         )}
-        <span className="playerName">{fullName}</span>
+        <span className="playerName">
+          {fullName}
+          {isCurrentUser && " (Moi)"}
+        </span>
       </div>
 
       <div className="score-row-mid">
@@ -42,6 +46,15 @@ export default function ScoreRow({ id, rank, fullName, solved, score, compact }:
       </div>
     </div>
   );
+
+  // If a click handler is provided prefer that (allow parent to show profile inline)
+  if (onClick && id) {
+    return (
+      <div className="score-row-link score-row-button" onClick={() => onClick(id)}>
+        {content}
+      </div>
+    );
+  }
 
   if (id) {
     return (

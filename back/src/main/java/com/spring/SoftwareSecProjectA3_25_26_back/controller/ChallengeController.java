@@ -88,6 +88,11 @@ public class ChallengeController {
         return ResponseEntity.ok(challengeService.createForLoggedUser(dto));
     }
 
+    @GetMapping("/listFromIds")
+    public ResponseEntity<List<ChallengeDto>> listFromIds(@RequestParam List<Long> ChallengesIds) {
+        return ResponseEntity.ok(challengeService.getChallengesByIds(userId));
+    }
+
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ChallengeDto> createWithFiles(
@@ -107,6 +112,11 @@ public class ChallengeController {
     public ResponseEntity<Void> delete(@PathVariable Long challengeId) {
         challengeService.delete(challengeId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{challengeId}")
+    public ResponseEntity<ChallengeDto> get(@PathVariable Long challengeId) {
+        return ResponseEntity.ok(challengeService.getById(challengeId));
     }
 
     /**

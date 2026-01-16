@@ -26,8 +26,9 @@
 
 .modal-close-btn {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  /* légèrement plus haut et plus à droite */
+  top: 0.2rem;
+  right: 0.6rem;
   background: none;
   border: none;
   font-size: 1.5rem;

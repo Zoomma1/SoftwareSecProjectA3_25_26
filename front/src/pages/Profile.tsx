@@ -5,66 +5,47 @@ import ChallengeCard from "../components/ChallengeCard/ChallengeCard";
 import "./Profile.css";
 import Input from "../components/Input/Input";
 import ScoreRow from "../components/ScoreRow/ScoreRow";
+import { ChallengeService, type Challenge } from "../Service/ChallengeService";
 
-function decodeJwtPayload(token: string): any | null {
-  try {
-    const parts = token.split(".");
-    if (parts.length !== 3) return null;
+const DIFFICULTY_MAP: Record<string, { points: number; level: number }> = {
+  VERY_EASY: { points: 20, level: 1 },
+  EASY: { points: 40, level: 2 },
+  MEDIUM: { points: 60, level: 3 },
+  HARD: { points: 80, level: 4 },
+  VERY_HARD: { points: 100, level: 5 },
+};
 
-    let base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-    while (base64.length % 4) base64 += "=";
-
-    const json = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map((c) => "%" + c.charCodeAt(0).toString(16).padStart(2, "0"))
-        .join("")
-    );
-
-    return JSON.parse(json);
-  } catch {
-    return null;
-  }
-}
-
-// Demo data: 18 challenges with first 6 resolved
-const challenges = Array.from({ length: 18 }).map((_, i) => ({
-  id: i + 1,
-  category: "Web",
-  points: 75,
-  title: `Nom du challenge ${i + 1}`,
-  difficulty: (i % 5) + 1,
-  isResolved: i < 6, // first 6 resolved, rest not
-}));
-
-type UserModel = {
-  fullName: string;
+ type UserModel = {
+  displayName: string;
   email: string;
   solved: number;
   score: number;
-};
+ };
 
 export default function Profile() {
   const [showResolved, setShowResolved] = useState(false);
   const [user, setUser] = useState<UserModel | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
+  
+
+  useEffect(() => {
+      ChallengeService.getLatest()
+        .then((data) => {
+          if (Array.isArray(data)) {
+            setChallenges(data);
+          }
+        })
+        .catch((err) => console.error("Erreur chargement challenges:", err));
+    }, []);
+  
 
   useEffect(() => {
   let mounted = true;
 
   (async () => {
     try {
-      // 1) tentative fullName depuis cache (set au register)
-      const cachedFullName = localStorage.getItem("fullName");
-
-      // 2) tentative fullName depuis JWT
-      const token = localStorage.getItem("token");
-      const payload = token ? decodeJwtPayload(token) : null;
-      const jwtFullName =
-        payload?.fullname || payload?.fullName || payload?.name || null;
-
-      // 3) appel /users/me pour email + stats
       const model = await UserService.loadCurrentUser();
       if (!mounted) return;
 
@@ -78,14 +59,11 @@ export default function Profile() {
       const solved = data.completedChallenges?.length ?? 0;
       const score = data.totalChallengePoints ?? 0;
 
-      // IMPORTANT: username = email chez toi => on ne l’utilise pas comme nom
-      const displayName =
-        cachedFullName ||
-        jwtFullName ||
-        "Utilisateur";
+      const apiUsername = (data.username ?? data.userName ?? "").trim();
+      const displayName = apiUsername || "Utilisateur";
 
       setUser({
-        fullName: displayName,
+        displayName,
         email,
         solved,
         score,
@@ -103,9 +81,13 @@ export default function Profile() {
   };
 }, []);
 
-  const filteredChallenges = challenges.filter((c) =>
-    showResolved ? c.isResolved : !c.isResolved
-  );
+  const filteredChallenges = challenges
+    .filter((c) => (showResolved ? c.isResolved : !c.isResolved))
+    .sort((a, b) => {
+      const levelA = DIFFICULTY_MAP[a.difficulty]?.level || 0;
+      const levelB = DIFFICULTY_MAP[b.difficulty]?.level || 0;
+      return levelA - levelB;
+    });
 
   return (
     <div className="profileLayout">
@@ -119,7 +101,7 @@ export default function Profile() {
                 <div className="profileAvatar" />
               </div>
               <div className="profileName">
-                {isLoading ? "Chargement..." : loadError ? "Utilisateur" : user?.fullName}
+                {isLoading ? "Chargement..." : loadError ? "Utilisateur" : user?.displayName}
               </div>
               <div className="profileInfo">
                 <div className="profileInfoTitle">Information</div>
@@ -144,7 +126,7 @@ export default function Profile() {
             <div className="profileStatsBanner">
               <ScoreRow
               rank={1}
-              fullName={user?.fullName ?? "Utilisateur"}
+              fullName={user?.displayName ?? "Utilisateur"}
               solved={user?.solved ?? 0}
               score={user?.score ?? 0}
               compact
@@ -180,7 +162,13 @@ export default function Profile() {
 
               <div className="profileChallengesGrid">
                 {filteredChallenges.map((c) => (
-                  <ChallengeCard key={c.id} {...c} />
+                  <ChallengeCard 
+                  key={c.id}
+                  category={c.category}
+                  points={DIFFICULTY_MAP[c.difficulty]?.points || 0}
+                  title={c.title}
+                  difficulty={DIFFICULTY_MAP[c.difficulty]?.level || 0}
+                  isResolved={c.isResolved ?? false} />
                 ))}
               </div>
             </div>

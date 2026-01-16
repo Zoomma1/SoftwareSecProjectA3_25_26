@@ -16,11 +16,11 @@
   padding-bottom: 2vh; /* leave room so content bottom aligns with sidebar bottom */
 }
 
-.ChalengeGrid{
+.ChallengeGrid{
   display: grid;
   grid-template-columns: repeat(auto-fill, 17vw);
   gap: 20px;
-  padding: 0px 5vw 3vh 5vw;
+  padding: 0px 0vw 3vh 5vw;
 }
 
 /* wrapper to host scrollbar (like rankingListWrapper) */
@@ -28,6 +28,7 @@
   flex: 1; /* take remaining vertical space between SearchBar/title and bottom */
   overflow-y: auto;
   padding-right: 12px;
+  width: 93%;
   box-sizing: border-box;
   scroll-behavior: smooth;
 }
@@ -84,4 +85,37 @@
 .img {
   width: 24px;
   filter: invert(1);
+}
+
+.filters-container {
+  position: relative;
+  display: flex;
+  margin: 10vh 1vw 0vh 25vw;
+  gap: 1rem;
+}
+
+.Filter {
+    padding: 10px;
+    height: auto;
+    border: none;
+    cursor: pointer;
+}
+
+.Filter:hover {
+    transform: scale(1.1);
+}
+
+.filter-icon {
+  width: 1.5vw;
+  filter: invert(32%) sepia(54%) saturate(4649%) hue-rotate(226deg) brightness(98%) contrast(92%);
+}
+
+.Filter {
+  display: flex;
+  gap: 0.5rem;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  background-color: white;
+  box-shadow: 0 3px 6px #d6dce5;
+  overflow: hidden;
 }

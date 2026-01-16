@@ -5,16 +5,27 @@ import Button from "../../../components/Button/Button.tsx";
 
 export interface ChallengeFormData {
   title: string;
-  difficulty: number;
+  difficulty: string;
   points: number;
   description: string;
   files: File[];
   answer: string;
+  category: string;
 }
 
 interface ChallengeFormProps {
   onSubmit: (data: ChallengeFormData) => void;
 }
+
+const difficultyMap: Record<number, string> = {
+  1: "VERY_EASY",
+  2: "EASY",
+  3: "MEDIUM",
+  4: "HARD",
+  5: "VERY_HARD",
+};
+
+const CATEGORIES = ["Web", "Infra", "SupplyChain", "Other"];
 
 export default function ChallengesForm({ onSubmit }: ChallengeFormProps) {
   const [title, setTitle] = useState("");
@@ -22,13 +33,17 @@ export default function ChallengesForm({ onSubmit }: ChallengeFormProps) {
   const [description, setDescription] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [answer, setAnswer] = useState("");
+  const [category, setCategory] = useState("Web");
+  const [customCategory, setCustomCategory] = useState("");
 
   const points = difficulty * 20;
 
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onSubmit({ title, difficulty, points, description, files, answer });
+    const difficultyStr = difficultyMap[difficulty] || "VERY_EASY";
+    const finalCategory = category === "Other" ? customCategory : category;
+    onSubmit({ title, description, difficulty: difficultyStr, points, files, answer, category: finalCategory });
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +110,7 @@ export default function ChallengesForm({ onSubmit }: ChallengeFormProps) {
         className="hidden-file-input"
       />
       <label htmlFor="fileUpload" className="file-upload-link">
-        Ajouter des fichiers
+        Ajouter des fichiers (5MB max)
       </label>
 
       {files.length > 0 && (
@@ -111,6 +126,35 @@ export default function ChallengesForm({ onSubmit }: ChallengeFormProps) {
         </ul>
       )}
 
+      <label className="form-label">Catégorie</label>
+      <div className="category-radio-group">
+        {CATEGORIES.map((cat) => (
+          <label key={cat} className={`category-radio-label ${category === cat ? "selected" : ""}`}>
+            <input
+              type="radio"
+              name="category"
+              value={cat}
+              checked={category === cat}
+              onChange={(e) => setCategory(e.target.value)}
+              className="category-radio-input"
+            />
+            {cat}
+          </label>
+        ))}
+      </div>
+
+      {category === "Other" && (
+        <div className="custom-category-container">
+          <Input
+            type="text"
+            placeholder="Précisez la catégorie..."
+            value={customCategory}
+            onChange={(e) => setCustomCategory(e.target.value)}
+            required
+          />
+        </div>
+      )}
+
       <label className="form-label">Réponse</label>
       <Input
         type="text"
@@ -121,7 +165,7 @@ export default function ChallengesForm({ onSubmit }: ChallengeFormProps) {
       />
       <Button
         type="submit"
-        disabled={!title || !description || !answer || difficulty === 0 || files.length === 0}
+        disabled={!title || !description || !answer || difficulty === 0 || files.length === 0 || (category === "Other" && !customCategory.trim())}
       >
         Post Challenge
       </Button>

@@ -90,11 +90,6 @@ export default function Login() {
                 />
                 <span>Se souvenir de moi</span>
               </label>
-
-              {/* route /forgot-password (create page if missing) */}
-              <Link to="/forgot-password" className="authLinkBtn">
-                Mot de passe oublié ?
-              </Link>
             </div>
 
             <button className="authPrimaryBtn" type="submit" disabled={isSubmitting}>

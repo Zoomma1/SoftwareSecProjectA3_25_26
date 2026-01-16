@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import './ChallengeCard.css';
 
 interface ChallengeCardProps {
+  id?: number;
   category: string;
   points: number;
   title: string;
@@ -9,12 +10,23 @@ interface ChallengeCardProps {
   isResolved: boolean;
 }
 
-const ChallengeCard = ({ category, points, title, difficulty, isResolved }: ChallengeCardProps) => {
+const CATEGORY_IMAGES: Record<string, string> = {
+  Web: '/icons/Icon Web.svg',
+  Infra: '/icons/Icon Infra.svg',
+  SupplyChain: '/icons/Icon SupplyChain.svg',
+  Other: '/icons/Icon other.svg',
+};
+
+const ChallengeCard = ({ id, category, points, title, difficulty, isResolved }: ChallengeCardProps) => {
+  const bgImage = CATEGORY_IMAGES[category] || CATEGORY_IMAGES['Other'];
+
+  const to = id ? `/challenges/${id}` : "/challenges";
+
   return (
-    <Link to="/challenges/:id" className="challenge-card-link">
+    <Link to={to} className="challenge-card-link">
     <div className="card-container">
       {/* Header avec catégorie et points */}
-      <div className="card-header">
+      <div className="card-header" style={{ backgroundImage: `url('${bgImage}')` }}>
         <span className="category-tag">{category}</span>
         <span className="points-text">{points} pt</span>
       </div>

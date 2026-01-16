@@ -2,6 +2,7 @@ package com.spring.SoftwareSecProjectA3_25_26_back.controller;
 
 import com.spring.SoftwareSecProjectA3_25_26_back.annotation.PublicEndpoint;
 import com.spring.SoftwareSecProjectA3_25_26_back.dal.model.enums.Difficulty;
+import com.spring.SoftwareSecProjectA3_25_26_back.dal.model.postgres.Challenge;
 import com.spring.SoftwareSecProjectA3_25_26_back.dto.ChallengeDto;
 import com.spring.SoftwareSecProjectA3_25_26_back.dto.request.ChallengeSubmissionRequestDto;
 import com.spring.SoftwareSecProjectA3_25_26_back.dto.request.ChallengeUploadRequestDto;
@@ -22,6 +23,12 @@ public class ChallengeController {
 
     public ChallengeController(ChallengeService challengeService) {
         this.challengeService = challengeService;
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<ChallengeDto>> getAllChallenges() {
+        List<ChallengeDto> challenges = challengeService.getAllChallenges();
+        return ResponseEntity.ok(challenges);
     }
 
     /** Derniers challenges (home). */

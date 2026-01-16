@@ -43,6 +43,12 @@ public class ChallengeService {
                 .toList();
     }
 
+    public  List<ChallengeDto> getAllChallenges() {
+        return challengeRepository.findAll().stream()
+                .map(ChallengeMapper.INSTANCE::toDto)
+                .toList();
+    }
+
     /**
      * Retourne les derniers challenges d'un user.
      */

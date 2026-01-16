@@ -33,7 +33,7 @@ export const ChallengeService = {
         throw new Error("Session expirée");
       }
       const errorData = await response.json().catch(() => ({}));
-      console.error("Erreur chargement challenges:", response.status, errorData);
+      console.error("Erreur chargement challenges:", response.status);
       if (Object.keys(errorData).length === 0) {
         throw new Error(`Erreur serveur (${response.status}). Vérifiez que le backend est lancé.`);
       }
@@ -61,7 +61,7 @@ export const ChallengeService = {
         throw new Error("Session expirée");
       }
       const errorData = await response.json().catch(() => ({}));
-      console.error("Erreur création challenge:", response.status, errorData);
+      console.error("Erreur création challenge:", response.status);
       if (Object.keys(errorData).length === 0) {
         throw new Error(`Erreur serveur (${response.status}). Vérifiez que le backend est lancé.`);
       }
@@ -88,7 +88,7 @@ export const ChallengeService = {
         throw new Error("Session expirée");
       }
       const errorData = await response.json().catch(() => ({}));
-      console.error("Erreur chargement challenges par catégorie:", response.status, errorData);
+      console.error("Erreur chargement challenges par catégorie:", response.status);
       if (Object.keys(errorData).length === 0) {
         throw new Error(`Erreur serveur (${response.status}). Vérifiez que le backend est lancé.`);
       }
@@ -115,7 +115,7 @@ export const ChallengeService = {
         throw new Error("Session expirée");
       }
       const errorData = await response.json().catch(() => ({}));
-      console.error("Erreur chargement challenges par difficulté:", response.status, errorData);
+      console.error("Erreur chargement challenges par difficulté:", response.status);
       if (Object.keys(errorData).length === 0) {
         throw new Error(`Erreur serveur (${response.status}). Vérifiez que le backend est lancé.`);
       }
@@ -135,7 +135,7 @@ export const ChallengeService = {
         throw new Error("Session expirée");
       }
       const errorData = await resp.json().catch(() => ({}));
-      console.error("Erreur chargement challenge:", resp.status, errorData);
+      console.error("Erreur chargement challenge:", resp.status);
       if (Object.keys(errorData).length === 0) {
         throw new Error(`Erreur serveur (${resp.status}). Vérifiez que le backend est lancé.`);
       }

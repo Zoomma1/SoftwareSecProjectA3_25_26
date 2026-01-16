@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import "./Auth.css";
 import Input from "../components/Input/Input";
 import { AuthService } from "../Service/AuthService";
@@ -8,6 +8,12 @@ const LOCKOUT_DURATION = 60;
 
 export default function Login() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  
+  // Security: Prevent Open Redirect vulnerabilities by validating the 'from' param
+  const rawFrom = searchParams.get("from");
+  const from = (rawFrom && rawFrom.startsWith("/") && !rawFrom.startsWith("//")) ? rawFrom : "/challenges";
+
   const [email, setEmail] = useState(() => localStorage.getItem("remember_email") || "");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(() => !!localStorage.getItem("remember_email"));
@@ -26,9 +32,9 @@ export default function Login() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/challenges");
+      navigate(from, { replace: true });
     }
-  }, [navigate]);
+  }, [navigate, from]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -65,7 +71,7 @@ export default function Login() {
 
       localStorage.removeItem("auth_attempts");
       localStorage.removeItem("auth_lockout_until");
-      navigate("/challenges");
+      navigate(from, { replace: true });
     } catch (err: any) {
       const attempts = parseInt(localStorage.getItem("auth_attempts") || "0", 10) + 1;
       localStorage.setItem("auth_attempts", attempts.toString());

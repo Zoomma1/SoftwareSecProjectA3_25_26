@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import { ChallengeService, type Challenge } from "../Service/ChallengeService";
 import { UserService } from "../Service/UserService";
 import "./ChallengeDetail.css";
+import DOMPurify from "dompurify";
 
 const DIFFICULTY_MAP: Record<string, { points: number; level: number }> = {
   VERY_EASY: { points: 20, level: 1 },
@@ -136,7 +137,7 @@ export default function ChallengeDetail() {
               </div>
 
               <div className="challenge-desc">
-                <div dangerouslySetInnerHTML={{ __html: challenge.description || '' }} />
+                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(challenge.description || '') }} />
 
               </div>
 

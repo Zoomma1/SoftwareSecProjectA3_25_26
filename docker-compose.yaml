@@ -44,7 +44,7 @@ services:
     volumes:
       - serv-db-data:/var/lib/postgresql/data
     ports:
-      - 5534:5532
+      - 5534:5432
     networks:
       - prod
 
@@ -73,7 +73,7 @@ services:
       dockerfile: Dockerfile
     container_name: dev-front
     ports:
-      - 4200:80
+      - 4200:5173
     networks:
       - dev
 

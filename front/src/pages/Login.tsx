@@ -24,6 +24,13 @@ export default function Login() {
   });
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/challenges");
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       const lockoutUntil = localStorage.getItem("auth_lockout_until");
       if (lockoutUntil) {

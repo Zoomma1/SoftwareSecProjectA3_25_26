@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo, useState, useEffect, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Auth.css";
 import { AuthService } from "../Service/AuthService";
@@ -35,6 +35,13 @@ export default function Register() {
   const [showConfirmPwd, setShowConfirmPwd] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [generalError, setGeneralError] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/challenges");
+    }
+  }, [navigate]);
 
   const passwordRequirements = [
     { label: "8 caractères minimum", met: form.password.length >= 8 },

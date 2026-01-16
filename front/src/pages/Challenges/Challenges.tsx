@@ -39,6 +39,7 @@ export default function Challenges() {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   useDisableBodyScroll();
 
@@ -143,6 +144,15 @@ export default function Challenges() {
             onChange={setSelectedDifficulty}
             placeholder="Toutes les difficultés"
           />
+          <CustomSelect
+            options={[
+              { value: "solved", label: "Résolu" },
+              { value: "unsolved", label: "Non résolu" },
+            ]}
+            value={filterStatus}
+            onChange={setFilterStatus}
+            placeholder="Tous les statuts"
+          />
           <button className="Filter" onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}>
             <img 
               src="/icons/Icon Sort.svg" 
@@ -157,9 +167,12 @@ export default function Challenges() {
         <div className="challengeListWrapper">
           <div className="ChallengeGrid">
             {challenges
-              .filter((c) =>
-                c.title.toLowerCase().includes(query.trim().toLowerCase())
-              )
+              .filter((c) => {
+                if (!c.title.toLowerCase().includes(query.trim().toLowerCase())) return false;
+                if (filterStatus === "solved" && !c.isResolved) return false;
+                if (filterStatus === "unsolved" && c.isResolved) return false;
+                return true;
+              })
               .sort((a, b) => {
                 const levelA = DIFFICULTY_MAP[a.difficulty]?.level || 0;
                 const levelB = DIFFICULTY_MAP[b.difficulty]?.level || 0;
